@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Naval Pursuit</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <h1>Privacy Policy for Naval Pursuit</h1>
+    <p><strong>Last updated:</strong> November 2026</p>
+
+    <p>Welcome to Naval Pursuit. This Privacy Policy applies to the Naval Pursuit Android application and the Naval Pursuit web application (collectively, the "App"). We are committed to protecting your privacy and ensuring you understand what data is collected and how it is used.</p>
+
+    <h2>1. Data Collection and Usage</h2>
+    <p>Naval Pursuit is designed to be a lightweight, multiplayer game. The types of data collected are minimal:</p>
+    <ul>
+        <li><strong>Game Data:</strong> When you host or join a game sector, gameplay actions (such as ship placements, attacks, and chat messages) are transmitted over the internet to the game server you are connected to.</li>
+        <li><strong>Server Logs:</strong> The game server runs via Podman Quadlet. Standard operational logs (which may include IP addresses and connection timestamps) are captured and stored in the host system's systemd journal for diagnostic and security purposes.</li>
+        <li><strong>Device Identifiers (Push Notifications):</strong> If you use the Android app, it utilizes Firebase Cloud Messaging (FCM) to deliver game updates (such as when it is your turn or if combat has begun). To enable this, a Firebase Installation ID is generated and sent to the game server.</li>
+        <li><strong>Analytics:</strong> The Android app includes Firebase Analytics to help us understand general usage and crash reports to improve the App. This data is aggregated and does not personally identify you.</li>
+    </ul>
+
+    <h2>2. Permissions (Android App)</h2>
+    <p>The Android app requests the following permissions for core functionality:</p>
+    <ul>
+        <li><strong>Internet:</strong> Required to connect to multiplayer game servers.</li>
+        <li><strong>Vibrate:</strong> Used to provide haptic feedback during gameplay (e.g., when a ship is hit).</li>
+        <li><strong>Notifications:</strong> Required to notify you of turn updates and game events when the app is in the background.</li>
+    </ul>
+
+    <h2>3. Third-Party Services</h2>
+    <p>The App uses Google Firebase for analytics and push notifications. Firebase may collect anonymous usage data and unique installation IDs to function. Please review <a href="https://policies.google.com/privacy">Google's Privacy Policy</a> for more information on how they handle this data.</p>
+
+    <h2>4. Data Retention</h2>
+    <p>Gameplay data is only held on the specific server hosting that game sector. We do not maintain a centralized database of user accounts or game histories. Notification tokens (Installation IDs) are discarded when a game concludes or you leave the sector. Server logs maintained in the systemd journal are stored temporarily and are routinely rotated out by the host operating system.</p>
+
+    <h2>5. Children's Privacy</h2>
+    <p>Naval Pursuit does not knowingly collect personally identifiable information from children under 13. If you believe a child has provided us with personal information, please contact us so it can be deleted.</p>
+
+    <h2>6. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be posted on this page.</p>
+
+    <h2>7. Contact Us</h2>
+    <p>If you have any questions or concerns regarding this Privacy Policy, please contact the developer.</p>
+</body>
+</html>

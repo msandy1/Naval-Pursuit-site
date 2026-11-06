@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naval Pursuit</title>
+<meta name="description" content="A naval guessing game for up to 11 players on one shared grid. Hits don't light up: round numbers do. Read the trackers, work out where everyone is hiding, and be the last fleet afloat.">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #0f172a;
+    --panel-2: #1e293b;
+    --line: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #64748b;
+    --green: #2BE36B;
+    --green-hi: #2BE36B;
+    --green-soft: rgba(43, 227, 107, 0.12);
+    --red: #f87171;
+    --blue: #60a5fa;
+    --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Courier New", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 10px;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--green-hi); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap {
+    max-width: 1120px; margin: 0 auto;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .mono { font-family: var(--mono); }
+  .eyebrow {
+    font: 600 12px/1 var(--mono);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--green-hi);
+  }
+  h1, h2, h3 { line-height: 1.15; margin: 0; }
+  h2 { font: 700 clamp(26px, 4vw, 38px)/1.15 var(--mono); letter-spacing: 0.04em; margin: 12px 0 14px; }
+  section { padding: 88px 0; }
+  .lede { color: var(--muted); font-size: 18px; max-width: 640px; }
+
+  /* Background sonar grid, same motif as the game's menu */
+  .grid-bg {
+    background-image:
+      radial-gradient(ellipse at 70% 30%, rgba(43, 227, 107, 0.12), transparent 55%),
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+
+  /* Nav */
+  nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(51, 65, 85, 0.6); }
+  nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+  .brand { display: flex; align-items: center; line-height: 0; }
+  .brand img { width: auto; height: 36px; }
+  .brand:hover { text-decoration: none; }
+  nav .links { margin-left: auto; display: flex; gap: 22px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  nav .links a { color: var(--muted); }
+  nav .links a:hover { color: var(--text); text-decoration: none; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 6px; border: 1px solid;
+    font: 700 13px var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  }
+  .btn:hover { text-decoration: none; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { border-color: var(--green); background: rgba(43, 227, 107, 0.18); color: var(--green-hi); box-shadow: 0 0 18px rgba(43, 227, 107, 0.12); }
+  .btn-primary:hover { background: rgba(43, 227, 107, 0.28); box-shadow: 0 0 26px rgba(43, 227, 107, 0.3); }
+  .btn-ghost { border-color: #475569; background: rgba(100, 116, 139, 0.15); color: var(--text); }
+  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); }
+
+  /* Hero */
+  .hero { padding: 72px 0 96px; overflow: hidden; }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center; }
+  .hero h1 { font: 700 clamp(34px, 5.4vw, 58px)/1.08 var(--mono); letter-spacing: 0.02em; margin: 18px 0 20px; }
+  .hero h1 em { font-style: normal; color: var(--green-hi); text-shadow: 0 0 24px rgba(43, 227, 107, 0.35); }
+  .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .shots { position: relative; }
+  .shot-frame {
+    position: relative; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    background: var(--panel); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(43, 227, 107, 0.08);
+  }
+  .shot-frame .bar { display: flex; gap: 6px; padding: 9px 12px; background: #111a2e; border-bottom: 1px solid var(--line); }
+  .shot-frame .bar i { width: 9px; height: 9px; border-radius: 50%; background: #334155; }
+  .phone {
+    position: absolute; right: -18px; bottom: -56px; width: 31%;
+    border: 6px solid #1e293b; border-radius: 26px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px #334155;
+    background: var(--panel);
+  }
+  .phone img { aspect-ratio: 390 / 762; object-fit: cover; object-position: top; }
+  .radar { position: absolute; inset: -12% -8%; z-index: -1; pointer-events: none; }
+  .radar span {
+    position: absolute; left: 50%; top: 50%; width: 60%; aspect-ratio: 1; margin: -30% 0 0 -30%;
+    border: 1px solid rgba(43, 227, 107, 0.35); border-radius: 50%;
+    animation: ping 6s linear infinite; opacity: 0;
+  }
+  .radar span:nth-child(2) { animation-delay: 2s; }
+  .radar span:nth-child(3) { animation-delay: 4s; }
+  @keyframes ping { from { transform: scale(0.3); opacity: 0.9; } to { transform: scale(1.9); opacity: 0; } }
+
+  /* Stats strip */
+  .stats { border-block: 1px solid var(--line); background: var(--panel); padding: 0; }
+  .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat { padding: 26px 20px; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: 0; }
+  .stat b { display: block; font: 700 30px var(--mono); color: var(--green-hi); }
+  .stat span { color: var(--muted); font-size: 14px; }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+  .card .num { font: 700 13px var(--mono); color: var(--green-hi); letter-spacing: 0.2em; }
+  .card h3 { font: 700 20px var(--mono); margin: 10px 0 10px; letter-spacing: 0.04em; }
+  .card p { margin: 0; color: var(--muted); }
+  kbd { font: 600 12px var(--mono); padding: 1px 6px; border: 1px solid #475569; border-bottom-width: 2px; border-radius: 4px; color: var(--text); background: #1e293b; }
+
+  /* Deduction puzzle */
+  .puzzle { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; margin-top: 44px; }
+  .board { display: grid; grid-template-columns: 22px repeat(8, 1fr); gap: 0; font-family: var(--mono); max-width: 520px; }
+  .board .lbl { display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--dim); padding: 4px 0; }
+  .board .cell {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    background: #111827; border-right: 1px solid #475569; border-bottom: 1px solid #475569;
+    font-weight: 700; font-size: clamp(14px, 2.6vw, 22px); color: #fff; position: relative;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .board .cell.top { border-top: 1px solid #475569; }
+  .board .cell.left { border-left: 1px solid #475569; }
+  .board.solved .cell.ship { background: rgba(248, 113, 113, 0.18); box-shadow: inset 0 0 0 2px var(--red); }
+  .board.solved .cell.target::after {
+    content: ""; position: absolute; width: 38%; aspect-ratio: 1; border-radius: 50%;
+    border: 2px solid var(--red); animation: target 1.4s ease-in-out infinite;
+  }
+  @keyframes target { 50% { transform: scale(0.75); opacity: 0.6; } }
+  .tracker { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-family: var(--mono); max-width: 340px; }
+  .tracker .who { color: #facc15; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 10px; }
+  .tracker .row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); margin: 6px 0; }
+  .tracker .segs { display: flex; gap: 2px; }
+  .tracker .segs i { width: 24px; height: 24px; border: 1px solid #475569; background: #020617; display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 700; color: #fff; font-size: 12px; }
+  .tracker .segs i.hit { background: rgba(127, 29, 29, 0.85); }
+  .tracker .row.focus { color: var(--text); }
+  .puzzle ol { color: var(--muted); padding-left: 20px; margin: 18px 0 22px; }
+  .puzzle ol li { margin: 6px 0; }
+  .puzzle ol b { color: var(--text); }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .feature svg { width: 26px; height: 26px; stroke: var(--green-hi); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .feature h3 { font: 700 17px var(--mono); margin: 14px 0 8px; letter-spacing: 0.03em; }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .gallery figure { margin: 0; }
+  .gallery .shot-frame img { aspect-ratio: 16 / 10; object-fit: cover; object-position: center; }
+  .gallery figcaption { margin-top: 12px; color: var(--muted); font-size: 14px; }
+  .gallery figcaption b { display: block; color: var(--text); font: 700 14px var(--mono); letter-spacing: 0.06em; margin-bottom: 2px; }
+
+  /* Host */
+    pre {
+    margin: 0; background: #020617; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px; overflow-x: auto; font: 14px/1.75 var(--mono); color: #cbd5e1;
+  }
+  pre .c { color: var(--dim); }
+  pre .p { color: var(--green-hi); user-select: none; }
+  .checks { list-style: none; padding: 0; margin: 22px 0 0; }
+  .checks li { padding-left: 28px; position: relative; margin: 10px 0; color: var(--muted); }
+  .checks li::before { content: "✓"; position: absolute; left: 4px; color: var(--green-hi); font-weight: 700; }
+  .checks b { color: var(--text); font-weight: 600; }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+  footer .brand img { height: 26px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    section { padding: 64px 0; }
+    .hero { padding-top: 48px; }
+    .hero .wrap, .puzzle { grid-template-columns: 1fr; gap: 40px; }
+    .phone { right: -6px; bottom: -40px; width: 34%; }
+    .steps, .features, .gallery { grid-template-columns: 1fr; }
+    .stats .wrap { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { border-left: 0; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+    nav .links a:not(.gh) { display: none; }
+  }
+  @media (min-width: 901px) and (max-width: 1080px) {
+    .features, .gallery { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .radar span, .board.solved .cell.target::after { animation: none; }
+    .radar span { opacity: 0.25; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/logo.svg" alt="Naval Pursuit" width="145" height="36"></a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a class="gh" href="https://github.com/msandy1/multi-battleship">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero grid-bg" id="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Multiplayer deduction · 2–11 players</div>
+      <h1>One ocean.<br>Every fleet.<br><em>Nobody</em> sees a thing.</h1>
+      <p class="lede">Naval Pursuit puts every player's ships on a single shared grid. Hits don't light up; round numbers do. Read the trackers, cross-reference the board, and work out where everyone is hiding before they find you.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="/">Play Now (Web App)</a>
+        <a class="btn btn-ghost" href="https://github.com/msandy1/multi-battleship">View on GitHub</a>
+      </div>
+      <div class="coming-soon" style="margin-top: 1.5rem;">
+        <p class="mono" style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--muted);">Android App Coming Soon</p>
+        <a class="btn btn-ghost" style="font-size: 0.9rem; padding: 0.5rem 1rem;" href="#">Join the Testing Group</a>
+      </div>
+    </div>
+    <div class="shots">
+      <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="shot-frame">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="img/battle.jpg" width="1280" height="800" alt="Desktop battle view: a ten by ten grid full of round numbers with two squares aimed, the fleet trackers on the left and the Fire button on the right.">
+      </div>
+      <div class="phone">
+        <img src="img/trackers-mobile.jpg" width="780" height="1688" alt="The same battle on a phone: the grid above, and the Targets tab below with ACE's fleet pinned, showing the rounds its Frigate was hit in, over a row of enemy fleet cards with damage bars.">
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><b>11</b><span>commanders per sector</span></div>
+    <div class="stat"><b>1</b><span>shared battlefield</span></div>
+    <div class="stat"><b>0</b><span>accounts to create</span></div>
+    <div class="stat"><b>PWA</b><span>desktop, phone or installed</span></div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">How it works</div>
+    <h2>Deploy. Fire. Deduce.</h2>
+    <p class="lede">The classic paper game is a duel. Here, everyone shares the same water, so every shot fired might hit anyone, including you.</p>
+
+    <div class="steps">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>Deploy</h3>
+        <p>Everyone deploys while friends are still joining. Place five ships horizontally, vertically or diagonally, or hit <kbd>A</kbd> to auto-deploy. Ready up, and the host starts the battle.</p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>Fire</h3>
+        <p>You get one shot per ship still afloat. Lose ships, lose firepower. Mark targets during other players' turns so your volley is ready the moment yours begins.</p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>Deduce</h3>
+        <p>The board only shows the round each shot landed in. Each player's tracker shows the rounds their ships were hit. Match the two, and the fleets reveal themselves.</p>
+      </div>
+    </div>
+
+    <div class="puzzle">
+      <div>
+        <div class="board" id="board" aria-label="Example board, rows A to E and columns 1 to 8"></div>
+      </div>
+      <div>
+        <div class="tracker" aria-label="GOOSE's tracker">
+          <div class="who">GOOSE</div>
+          <div class="row"><span>CAR</span><span class="segs"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div class="row focus"><span>FRI</span><span class="segs"><i class="hit">3</i><i class="hit">7</i><i></i><i></i></span></div>
+          <div class="row"><span>CRU</span><span class="segs"><i></i><i></i><i></i></span></div>
+          <div class="row"><span>DES</span><span class="segs"><i class="hit">5</i><i></i></span></div>
+        </div>
+        <ol>
+          <li>GOOSE's <b>Frigate</b> (4 long) was hit in rounds <b>3</b> and <b>7</b>.</li>
+          <li>There are a few 3s and 7s on the board, but only one pair is within four cells in a straight line: <b>C3</b> and <b>C6</b>.</li>
+          <li>So the Frigate runs C3 to C6. Fire at <b>C4</b> and <b>C5</b> to sink it.</li>
+        </ol>
+        <button class="btn btn-primary" id="solve" type="button" aria-pressed="false">Show the answer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="grid-bg">
+  <div class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2>Built for game night</h2>
+    <div class="features">
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        <h3>Shared battlefield</h3>
+        <p>Up to 11 players on one grid, in three sizes: 10×10, 13×13 and 15×15. Alliances form, betrayals follow.</p>
+      </div>
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/></svg>
+        <h3>Missiles and sonar</h3>
+        <p>Your volley launches with missile trails while everyone else sees streaks drop in. Then a sonar sweep loads each round number with a ping.</p>
+      </div>
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <h3>Quick comms</h3>
+        <p>Trash talk and treaties in one tap: pick a ready-made line, no typing and nothing to moderate.</p>
+      </div>
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="11" rx="1.5"/><rect x="17" y="8" width="5" height="12" rx="1"/><path d="M6 19h6"/></svg>
+        <h3>Plays anywhere</h3>
+        <p>A command-console layout on desktop, a thumb-friendly one on phones, and installable as an app.</p>
+      </div>
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <h3>Your-turn alerts</h3>
+        <p>Optional push notifications mean games can run all day while everyone gets on with life.</p>
+      </div>
+      <div class="card feature">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <h3>Cross-platform</h3>
+        <p>Seamlessly battle against friends on Android, iOS, or through any modern web browser. One ocean, every fleet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">In action</div>
+    <h2>From lobby to last fleet standing</h2>
+    <div class="gallery">
+      <figure>
+        <div class="shot-frame"><img src="img/create.jpg" width="1280" height="800" loading="lazy" alt="Create sector form with a callsign and a choice of Regular 10 by 10, Large 13 by 13 or XL 15 by 15 grids."></div>
+        <figcaption><b>Open a sector</b>Pick a grid size, then share a four-letter code or a link. No sign-ups.</figcaption>
+      </figure>
+      <figure>
+        <div class="shot-frame"><img src="img/deploy.jpg" width="1280" height="800" loading="lazy" alt="Deployment screen: ships placed on the grid, shaded squares showing where the Cruiser fits, and the drydock inventory on the left."></div>
+        <figcaption><b>Deploy your fleet</b>Place by hand or auto-deploy, then ready up.</figcaption>
+      </figure>
+      <figure>
+        <div class="shot-frame"><img src="img/victory.jpg" width="1280" height="800" loading="lazy" alt="Victory screen reading Mission Complete, Victor: MAVERICK, with stars bursting out behind the card."></div>
+        <figcaption><b>Claim victory</b>Last fleet afloat takes the win and the stars.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><img src="img/logo.svg" alt="Naval Pursuit" width="104" height="26"></span>
+    <span>v0.6.0 · MIT License</span>
+    <a href="https://github.com/msandy1/multi-battleship">Source on GitHub</a> &bull; <a href="privacy.html">Privacy Policy</a>
+  </div>
+</footer>
+
+<script>
+  // Example board for the deduction walkthrough (rows A-E, columns 1-8).
+  // Shots are [row, col, round]; the Frigate sits on C3-C6.
+  (function () {
+    var rows = 'ABCDE', cols = 8;
+    var shots = { A2: 3, A7: 1, B5: 7, B8: 2, C3: 3, C6: 7, D1: 7, D7: 5, E2: 4, E7: 3, E8: 6 };
+    var ship = ['C3', 'C4', 'C5', 'C6'], targets = ['C4', 'C5'];
+    var board = document.getElementById('board');
+    var html = '<span class="lbl"></span>';
+    for (var c = 1; c <= cols; c++) html += '<span class="lbl">' + c + '</span>';
+    for (var r = 0; r < rows.length; r++) {
+      html += '<span class="lbl">' + rows[r] + '</span>';
+      for (var c2 = 1; c2 <= cols; c2++) {
+        var id = rows[r] + c2, cls = 'cell';
+        if (r === 0) cls += ' top';
+        if (c2 === 1) cls += ' left';
+        if (ship.indexOf(id) !== -1) cls += ' ship';
+        if (targets.indexOf(id) !== -1) cls += ' target';
+        html += '<span class="' + cls + '" title="' + id + '">' + (shots[id] || '') + '</span>';
+      }
+    }
+    board.innerHTML = html;
+
+    var btn = document.getElementById('solve');
+    btn.addEventListener('click', function () {
+      var solved = board.classList.toggle('solved');
+      btn.textContent = solved ? 'Hide the answer' : 'Show the answer';
+      btn.setAttribute('aria-pressed', String(solved));
+    });
+  })();
+</script>
+</body>
+</html>
