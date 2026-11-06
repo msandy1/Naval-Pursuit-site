@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="60 57 394 386">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 822 196">
+  <svg x="0" y="0" width="391" height="196" viewBox="61 58 391 196" overflow="visible">
   <g transform="matrix(1, 0, 0, 0.997897, 0.194, -8.459219)" style="">
     <g transform="matrix(0.88388, 0, 0, 0.993863, 64.481706, 12.036904)" style="">
       <g id="reticle" stroke="#2BE36B" fill="none" stroke-linecap="round" transform="matrix(1, 0, 0, 1, -78.002206, 31.55003)">
@@ -28,6 +29,10 @@
         <line x1="95" y1="195" x2="497" y2="195" stroke="#141D2B" stroke-width="3.5"/>
       </g>
     </g>
+  </g>
+  </svg>
+  <svg x="431" y="7.5" width="391" height="181" viewBox="61 261 391 181" overflow="visible">
+  <g transform="matrix(1, 0, 0, 0.997897, 0.194, -8.459219)" style="">
     <g id="text-naval" fill="#D5DCE2" transform="matrix(0.917859, 0, 0, 0.993863, -35.322781, 26.83564)" style="">
       <path d="M 108 318 L 108 248 L 124 248 L 166 296 L 166 248 L 182 248 L 182 318 L 166 318 L 124 270 L 124 318 Z"/>
       <path d="M 196 318 L 228 248 L 248 248 L 280 318 L 262 318 L 255 302 L 221 302 L 214 318 Z M 226 289 L 250 289 L 238 262 Z"/>
@@ -46,4 +51,5 @@
     </g>
     <polygon points="63.806 430.11 447.806 430.11 447.806 436.073 203.442 436.073 189.867 448 63.806 448" fill="#2BE36B" style="stroke-width: 0.938;"/>
   </g>
+  </svg>
 </svg>

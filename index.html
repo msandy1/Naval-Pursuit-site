@@ -6,9 +6,9 @@
 <title>Naval Pursuit</title>
 <meta name="description" content="A multiplayer naval battle for 2 to 11 friends on one shared grid. Hits don't light up: round numbers do. Read the clues, work out where everyone is hiding, and be the last fleet afloat. Plays in your browser, no sign-up.">
 <meta name="theme-color" content="#0f172a">
-<link rel="icon" href="img/icon.svg" type="image/svg+xml">
-<link rel="icon" href="img/icon.png" type="image/png">
-<link rel="apple-touch-icon" href="img/icon.png">
+<link rel="icon" href="img/icon-mark.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-mark-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icon-mark-180.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Naval Pursuit">
 <meta property="og:description" content="One ocean. Every fleet. Nobody sees a thing. A naval battle for 2 to 11 friends on one shared grid, right in your browser.">
@@ -24,6 +24,7 @@
     --dim: #64748b;
     --green: #2BE36B;
     --green-hi: #2BE36B;
+    --green-hover: #89F5AF;
     --green-soft: rgba(43, 227, 107, 0.12);
     --red: #f87171;
     --blue: #60a5fa;
@@ -43,7 +44,7 @@
   }
   img { max-width: 100%; height: auto; display: block; }
   a { color: var(--green-hi); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a:hover { text-decoration: underline; color: var(--green-hover); }
   .wrap {
     max-width: 1120px; margin: 0 auto;
     padding-left: max(20px, env(safe-area-inset-left, 0px));
@@ -73,8 +74,8 @@
   /* Nav */
   nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(51, 65, 85, 0.6); }
   nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
-  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font: 700 14px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-  .brand img { width: 34px; height: 34px; border-radius: 8px; }
+  .brand { display: flex; align-items: center; line-height: 0; }
+  .brand img { width: auto; height: 34px; }
   .brand:hover { text-decoration: none; }
   nav .links { margin-left: auto; display: flex; gap: 22px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
   nav .links a { color: var(--muted); }
@@ -95,7 +96,8 @@
   .btn-primary { border-color: var(--green); background: rgba(43, 227, 107, 0.18); color: var(--green-hi); box-shadow: 0 0 18px rgba(43, 227, 107, 0.12); }
   .btn-primary:hover { background: rgba(43, 227, 107, 0.28); box-shadow: 0 0 26px rgba(43, 227, 107, 0.3); }
   .btn-ghost { border-color: #475569; background: rgba(100, 116, 139, 0.15); color: var(--text); }
-  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); }
+  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); color: var(--text); }
+  .btn-primary:hover { color: var(--green-hover); }
 
   /* Hero */
   .hero { padding: 72px 0 96px; overflow: hidden; }
@@ -207,7 +209,7 @@
 
   footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: 14px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
-  footer .brand img { width: 26px; height: 26px; border-radius: 6px; }
+  footer .brand img { height: 26px; }
   footer .links { margin-left: auto; display: flex; gap: 22px; }
 
   /* Responsive */
@@ -239,7 +241,7 @@
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top"><img src="img/icon.svg" alt="" width="34" height="34">Naval Pursuit</a>
+    <a class="brand" href="#top"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="143" height="34"></a>
     <div class="links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
@@ -445,7 +447,7 @@
 
 <footer>
   <div class="wrap">
-    <span class="brand"><img src="img/icon.svg" alt="" width="26" height="26">Naval Pursuit</span>
+    <span class="brand"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="109" height="26"></span>
     <div class="links">
       <a data-play href="#">Play now</a>
       <a href="privacy.html">Privacy Policy</a>
