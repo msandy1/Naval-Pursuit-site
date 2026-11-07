@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Naval Pursuit</title>
+<meta name="description" content="Why Naval Pursuit exists: a naval battle for a whole group of friends on one shared grid, as easy to join as clicking a link.">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="About Naval Pursuit">
+<meta property="og:description" content="A naval battle for a whole group of friends on one shared grid, as easy to join as clicking a link.">
+<meta property="og:image" content="img/icon.png">
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #0f172a;
+    --line: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #64748b;
+    --green: #2BE36B;
+    --green-hover: #89F5AF;
+    --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Courier New", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 10px;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 var(--sans); -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; color: var(--green-hover); }
+  .wrap {
+    max-width: 1120px; margin: 0 auto;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .eyebrow { font: 600 12px/1 var(--mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--green); }
+  h1, h2, h3 { line-height: 1.15; margin: 0; }
+  h2 { font: 700 clamp(26px, 4vw, 36px)/1.15 var(--mono); letter-spacing: 0.04em; margin: 12px 0 14px; }
+  section { padding: 80px 0; }
+  .lede { color: var(--muted); font-size: 18px; max-width: 660px; }
+  .grid-bg {
+    background-image:
+      radial-gradient(ellipse at 70% 30%, rgba(43, 227, 107, 0.12), transparent 55%),
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+
+  nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(51, 65, 85, 0.6); }
+  nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+  .brand { display: flex; align-items: center; line-height: 0; }
+  .brand img { width: auto; height: 34px; }
+  nav .links { margin-left: auto; display: flex; align-items: center; gap: 22px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  nav .links a { color: var(--muted); }
+  nav .links a:hover, nav .links a[aria-current] { color: var(--text); text-decoration: none; }
+  nav .links a.play { color: var(--green); border: 1px solid var(--green); border-radius: 6px; padding: 8px 14px; background: rgba(43, 227, 107, 0.12); }
+  nav .links a.play:hover { background: rgba(43, 227, 107, 0.24); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 6px; border: 1px solid;
+    font: 700 13px var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  }
+  .btn:hover { text-decoration: none; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { border-color: var(--green); background: rgba(43, 227, 107, 0.18); color: var(--green); box-shadow: 0 0 18px rgba(43, 227, 107, 0.12); }
+  .btn-primary:hover { background: rgba(43, 227, 107, 0.28); box-shadow: 0 0 26px rgba(43, 227, 107, 0.3); color: var(--green-hover); }
+  .btn-ghost { border-color: #475569; background: rgba(100, 116, 139, 0.15); color: var(--text); }
+  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); color: var(--text); }
+
+  /* Hero */
+  .hero { padding: 72px 0 80px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 56px; align-items: center; }
+  .hero h1 { font: 700 clamp(32px, 5vw, 52px)/1.1 var(--mono); letter-spacing: 0.02em; margin: 16px 0 20px; }
+  .hero h1 em { font-style: normal; color: var(--green); text-shadow: 0 0 24px rgba(43, 227, 107, 0.35); }
+  .hero .mark { justify-self: center; width: min(320px, 70%); filter: drop-shadow(0 0 40px rgba(43, 227, 107, 0.18)); }
+
+  /* Story */
+  .story { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .story p { color: #cbd5e1; margin: 0 0 16px; }
+  .quote { border-left: 3px solid var(--green); padding: 4px 0 4px 22px; font: 600 clamp(18px, 2.4vw, 22px)/1.5 var(--mono); color: var(--text); margin: 8px 0 0; }
+
+  /* Principles */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; }
+  .card .num { font: 700 13px var(--mono); color: var(--green); letter-spacing: 0.2em; }
+  .card h3 { font: 700 18px var(--mono); margin: 10px 0 10px; letter-spacing: 0.04em; }
+  .card p { margin: 0; color: var(--muted); }
+
+  /* Specs */
+  .specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; margin-top: 36px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
+  .spec { padding: 22px 24px; border-top: 1px solid var(--line); }
+  .spec:nth-child(-n+2) { border-top: 0; }
+  .spec:nth-child(even) { border-left: 1px solid var(--line); }
+  .spec b { display: block; font: 600 11px var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+  .spec span { color: var(--text); }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 36px 0 0; padding: 0; max-width: 760px; }
+  .timeline li { position: relative; padding: 0 0 28px 34px; border-left: 1px solid var(--line); margin-left: 6px; }
+  .timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .timeline li::before { content: ""; position: absolute; left: -6px; top: 6px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--green); }
+  .timeline li.now::before { background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .timeline .v { font: 700 13px var(--mono); color: var(--green); letter-spacing: 0.14em; }
+  .timeline h3 { font: 700 17px var(--mono); margin: 4px 0 6px; letter-spacing: 0.03em; }
+  .timeline p { margin: 0; color: var(--muted); }
+
+  .final { text-align: center; }
+  .final .lede { margin: 0 auto; }
+  .final .cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+  footer .brand img { height: 26px; }
+  footer .links { margin-left: auto; display: flex; gap: 22px; }
+
+  @media (max-width: 900px) {
+    section { padding: 60px 0; }
+    .hero { padding-top: 48px; }
+    .hero .wrap, .story { grid-template-columns: 1fr; gap: 36px; }
+    .hero .mark { order: -1; width: 180px; justify-self: start; }
+    .cards { grid-template-columns: 1fr; }
+    .specs { grid-template-columns: 1fr; }
+    .spec:nth-child(2) { border-top: 1px solid var(--line); }
+    .spec:nth-child(even) { border-left: 0; }
+    footer .links { margin-left: 0; }
+    nav .links a:not(.play) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="143" height="34"></a>
+    <div class="links">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="about.html" aria-current="page">About</a>
+      <a class="play" data-play href="#">Play now</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero grid-bg">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">About Naval Pursuit</div>
+      <h1>The classic naval duel, rebuilt for <em>the whole crew.</em></h1>
+      <p class="lede">The classic naval guessing game is played by two people. Naval Pursuit puts up to eleven fleets in the same water, so every shot could hit anyone, and the real game is working out who's hiding where.</p>
+    </div>
+    <img class="mark" src="img/icon.svg" alt="" width="320" height="320">
+  </div>
+</header>
+
+<section>
+  <div class="wrap story">
+    <div>
+      <div class="eyebrow">Why it exists</div>
+      <h2>Game night shouldn't need a sign-up form.</h2>
+      <p class="quote">"I made this app to be as local as I could so it would be as easy as clicking a link to play."</p>
+    </div>
+    <div>
+      <p>Naval Pursuit is an independent game, designed and built by one developer for playing with friends and family. The goal from the start was a game a group could start in seconds: send a four-letter code or a link, everyone picks a callsign, and you're deploying ships.</p>
+      <p>Putting every fleet on one board changed the game. Hits don't light up on the grid. Instead, each square shows the round it was hit in, and each commander's tracker shows the rounds their ships were hit. Line those up and you can work out where someone's fleet is hiding. It's part battle and part puzzle, and alliances and betrayals happen naturally.</p>
+      <p>It also had to fit how groups actually play. Not everyone is free at the same moment, so a battle can run all day: take your turn when you can, and a notification lets you know when it's your move again.</p>
+    </div>
+  </div>
+</section>
+
+<section class="grid-bg">
+  <div class="wrap">
+    <div class="eyebrow">Principles</div>
+    <h2>What Naval Pursuit stands for</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>Zero friction</h3>
+        <p>No accounts, no passwords and no download required. It runs in any modern browser, installs to your home screen, and has a native Android app.</p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>Respect for players</h3>
+        <p>No ads, no in-app purchases, and nothing about you is sold. Sectors are deleted when the battle ends. The <a href="privacy.html">privacy policy</a> spells out the rest.</p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>Friendly by design</h3>
+        <p>Quick comms are ready-made lines and emoji, so trash talk stays fun and there's nothing to moderate. Callsigns can be anything you like.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Spec sheet</div>
+    <h2>Under the hood</h2>
+    <p class="lede">A small game, built carefully.</p>
+    <div class="specs">
+      <div class="spec"><b>Players</b><span>2 to 11 commanders per sector, on 10×10, 13×13 or 15×15 grids</span></div>
+      <div class="spec"><b>Platforms</b><span>Web app on phones, tablets and computers; installable as a PWA; native Android app</span></div>
+      <div class="spec"><b>Game server</b><span>Written in Rust, running in a hardened, read-only container</span></div>
+      <div class="spec"><b>Web client</b><span>React, with a command-console layout on desktop and a thumb-friendly one on phones</span></div>
+      <div class="spec"><b>Android app</b><span>Kotlin and Jetpack Compose, playing in the same sectors as the web</span></div>
+      <div class="spec"><b>Turn alerts</b><span>Push notifications, with reminders and a warning before a quiet sector closes</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="grid-bg">
+  <div class="wrap">
+    <div class="eyebrow">Ship's log</div>
+    <h2>How it got here</h2>
+    <ol class="timeline">
+      <li>
+        <div class="v">v0.5</div>
+        <h3>Easier to start, easier to learn</h3>
+        <p>A guided tour for new players, a choice of three grid sizes, sectors that open straight into deployment, and a prompt to install the app on phones.</p>
+      </li>
+      <li class="now">
+        <div class="v">v0.6 · Current</div>
+        <h3>A new name and a native app</h3>
+        <p>The game became Naval Pursuit, with a new logo. The Android app arrived, playing in the same sectors as the web, with notifications you can act on. The server was rewritten in Rust, and new haptics let you feel every hit.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Ready to take command?</h2>
+    <p class="lede">Open a sector and send the code to your crew.</p>
+    <div class="cta">
+      <a class="btn btn-primary" data-play data-path="?mode=create" href="#">Create a sector</a>
+      <a class="btn btn-ghost" href="index.html#how">How it works</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="109" height="26"></a>
+    <div class="links">
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var APP_URL = 'https://game.navalpursuit.com';
+  document.querySelectorAll('[data-play]').forEach(function (a) {
+    a.href = APP_URL + (a.getAttribute('data-path') || '');
+  });
+</script>
+</body>
+</html>
