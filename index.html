@@ -4,9 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Naval Pursuit</title>
-<meta name="description" content="A naval guessing game for up to 11 players on one shared grid. Hits don't light up: round numbers do. Read the trackers, work out where everyone is hiding, and be the last fleet afloat.">
+<meta name="description" content="A multiplayer naval battle for 2 to 11 friends on one shared grid. Hits don't light up: round numbers do. Read the clues, work out where everyone is hiding, and be the last fleet afloat. Plays in your browser, no sign-up.">
 <meta name="theme-color" content="#0f172a">
 <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Naval Pursuit">
+<meta property="og:description" content="One ocean. Every fleet. Nobody sees a thing. A naval battle for 2 to 11 friends on one shared grid, right in your browser.">
+<meta property="og:image" content="img/icon.png">
 <style>
   :root {
     --bg: #0b1120;
@@ -18,6 +24,7 @@
     --dim: #64748b;
     --green: #2BE36B;
     --green-hi: #2BE36B;
+    --green-hover: #89F5AF;
     --green-soft: rgba(43, 227, 107, 0.12);
     --red: #f87171;
     --blue: #60a5fa;
@@ -37,7 +44,7 @@
   }
   img { max-width: 100%; height: auto; display: block; }
   a { color: var(--green-hi); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  a:hover { text-decoration: underline; color: var(--green-hover); }
   .wrap {
     max-width: 1120px; margin: 0 auto;
     padding-left: max(20px, env(safe-area-inset-left, 0px));
@@ -68,11 +75,14 @@
   nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(51, 65, 85, 0.6); }
   nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
   .brand { display: flex; align-items: center; line-height: 0; }
-  .brand img { width: auto; height: 36px; }
+  .brand img { width: auto; height: 34px; }
   .brand:hover { text-decoration: none; }
   nav .links { margin-left: auto; display: flex; gap: 22px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
   nav .links a { color: var(--muted); }
   nav .links a:hover { color: var(--text); text-decoration: none; }
+  nav .links { align-items: center; }
+  nav .links a.play { color: var(--green-hi); border: 1px solid var(--green); border-radius: 6px; padding: 8px 14px; background: rgba(43, 227, 107, 0.12); }
+  nav .links a.play:hover { background: rgba(43, 227, 107, 0.24); }
 
   /* Buttons */
   .btn {
@@ -86,7 +96,8 @@
   .btn-primary { border-color: var(--green); background: rgba(43, 227, 107, 0.18); color: var(--green-hi); box-shadow: 0 0 18px rgba(43, 227, 107, 0.12); }
   .btn-primary:hover { background: rgba(43, 227, 107, 0.28); box-shadow: 0 0 26px rgba(43, 227, 107, 0.3); }
   .btn-ghost { border-color: #475569; background: rgba(100, 116, 139, 0.15); color: var(--text); }
-  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); }
+  .btn-ghost:hover { background: rgba(100, 116, 139, 0.28); color: var(--text); }
+  .btn-primary:hover { color: var(--green-hover); }
 
   /* Hero */
   .hero { padding: 72px 0 96px; overflow: hidden; }
@@ -94,6 +105,17 @@
   .hero h1 { font: 700 clamp(34px, 5.4vw, 58px)/1.08 var(--mono); letter-spacing: 0.02em; margin: 18px 0 20px; }
   .hero h1 em { font-style: normal; color: var(--green-hi); text-shadow: 0 0 24px rgba(43, 227, 107, 0.35); }
   .hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .hero .note { margin: 18px 0 0; font: 600 12px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  .hero .note::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+  /* The stacked logo, in the same two layers as the app's menu: the ship and
+     crosshair glide in from the left, the name from the right. */
+  .logo-anim { position: relative; width: 200px; aspect-ratio: 394 / 386; }
+  .logo-anim img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .logo-anim .ship { animation: logo-from-left 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+  .logo-anim .words { animation: logo-from-right 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both; }
+  @keyframes logo-from-left { from { opacity: 0; transform: translateX(-72px); } to { opacity: 1; transform: none; } }
+  @keyframes logo-from-right { from { opacity: 0; transform: translateX(72px); } to { opacity: 1; transform: none; } }
   .shots { position: relative; }
   .shot-frame {
     position: relative; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
@@ -175,21 +197,20 @@
   .gallery figcaption { margin-top: 12px; color: var(--muted); font-size: 14px; }
   .gallery figcaption b { display: block; color: var(--text); font: 700 14px var(--mono); letter-spacing: 0.06em; margin-bottom: 2px; }
 
-  /* Host */
-    pre {
-    margin: 0; background: #020617; border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 22px; overflow-x: auto; font: 14px/1.75 var(--mono); color: #cbd5e1;
-  }
-  pre .c { color: var(--dim); }
-  pre .p { color: var(--green-hi); user-select: none; }
-  .checks { list-style: none; padding: 0; margin: 22px 0 0; }
-  .checks li { padding-left: 28px; position: relative; margin: 10px 0; color: var(--muted); }
-  .checks li::before { content: "✓"; position: absolute; left: 4px; color: var(--green-hi); font-weight: 700; }
-  .checks b { color: var(--text); font-weight: 600; }
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 40px; }
+  .faq h3 { font: 700 16px var(--mono); letter-spacing: 0.03em; margin: 0 0 8px; }
+
+  /* Closing call to action */
+  .final { text-align: center; }
+  .final .logo-anim { margin: 0 auto 8px; width: 160px; }
+  .final .lede { margin: 0 auto; }
+  .final .cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
 
   footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: 14px; }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
   footer .brand img { height: 26px; }
+  footer .links { margin-left: auto; display: flex; gap: 22px; }
 
   /* Responsive */
   @media (max-width: 900px) {
@@ -197,11 +218,13 @@
     .hero { padding-top: 48px; }
     .hero .wrap, .puzzle { grid-template-columns: 1fr; gap: 40px; }
     .phone { right: -6px; bottom: -40px; width: 34%; }
-    .steps, .features, .gallery { grid-template-columns: 1fr; }
+    .steps, .features, .gallery, .faq { grid-template-columns: 1fr; }
+    .hero .logo-anim { width: 160px; }
+    footer .links { margin-left: 0; }
     .stats .wrap { grid-template-columns: repeat(2, 1fr); }
     .stat:nth-child(3) { border-left: 0; }
     .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
-    nav .links a:not(.gh) { display: none; }
+    nav .links a:not(.play) { display: none; }
   }
   @media (min-width: 901px) and (max-width: 1080px) {
     .features, .gallery { grid-template-columns: repeat(2, 1fr); }
@@ -210,6 +233,7 @@
     html { scroll-behavior: auto; }
     .radar span, .board.solved .cell.target::after { animation: none; }
     .radar span { opacity: 0.25; }
+    .logo-anim img { animation: none !important; }
   }
 </style>
 </head>
@@ -217,11 +241,12 @@
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top"><img src="img/logo.svg" alt="Naval Pursuit" width="145" height="36"></a>
+    <a class="brand" href="#top"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="143" height="34"></a>
     <div class="links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
-      <a class="gh" href="https://github.com/msandy1/multi-battleship">GitHub</a>
+      <a href="#faq">FAQ</a>
+      <a class="play" data-play href="#">Play now</a>
     </div>
   </div>
 </nav>
@@ -229,17 +254,18 @@
 <header class="hero grid-bg" id="top">
   <div class="wrap">
     <div>
-      <div class="eyebrow">Multiplayer deduction · 2–11 players</div>
-      <h1>One ocean.<br>Every fleet.<br><em>Nobody</em> sees a thing.</h1>
-      <p class="lede">Naval Pursuit puts every player's ships on a single shared grid. Hits don't light up; round numbers do. Read the trackers, cross-reference the board, and work out where everyone is hiding before they find you.</p>
+      <div class="logo-anim">
+        <img class="ship" src="img/logo-ship.svg" alt="">
+        <img class="words" src="img/logo-words.svg" alt="Naval Pursuit">
+      </div>
+      <div class="eyebrow" style="margin-top: 22px;">Multiplayer naval battle · 2–11 players</div>
+      <h1>One ocean.<br>Every fleet.<br>Can <em>you</em> find the enemy?</h1>
+      <p class="lede">Gather your friends for a naval battle where everyone's ships share the same water. Track shots, work out where everyone is hiding, and sink them before they find you.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="/">Play Now (Web App)</a>
-        <a class="btn btn-ghost" href="https://github.com/msandy1/multi-battleship">View on GitHub</a>
+        <a class="btn btn-primary" data-play href="#">Play now</a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
       </div>
-      <div class="coming-soon" style="margin-top: 1.5rem;">
-        <p class="mono" style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--muted);">Android App Coming Soon</p>
-        <a class="btn btn-ghost" style="font-size: 0.9rem; padding: 0.5rem 1rem;" href="#">Join the Testing Group</a>
-      </div>
+      <p class="note">Play in your browser · Android app coming soon</p>
     </div>
     <div class="shots">
       <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -258,8 +284,8 @@
   <div class="wrap">
     <div class="stat"><b>11</b><span>commanders per sector</span></div>
     <div class="stat"><b>1</b><span>shared battlefield</span></div>
+    <div class="stat"><b>3</b><span>sector sizes</span></div>
     <div class="stat"><b>0</b><span>accounts to create</span></div>
-    <div class="stat"><b>PWA</b><span>desktop, phone or installed</span></div>
   </div>
 </div>
 
@@ -267,27 +293,28 @@
   <div class="wrap">
     <div class="eyebrow">How it works</div>
     <h2>Deploy. Fire. Deduce.</h2>
-    <p class="lede">The classic paper game is a duel. Here, everyone shares the same water, so every shot fired might hit anyone, including you.</p>
+    <p class="lede">Here, everyone shares the same water, so every shot fired might hit anyone, including you.</p>
 
     <div class="steps">
       <div class="card">
         <div class="num">01</div>
         <h3>Deploy</h3>
-        <p>Everyone deploys while friends are still joining. Place five ships horizontally, vertically or diagonally, or hit <kbd>A</kbd> to auto-deploy. Ready up, and the host starts the battle.</p>
+        <p>Place your five ships horizontally, vertically or diagonally, or let the game auto-deploy them for you. Signal Ready, and the host starts the battle.</p>
       </div>
       <div class="card">
         <div class="num">02</div>
         <h3>Fire</h3>
-        <p>You get one shot per ship still afloat. Lose ships, lose firepower. Mark targets during other players' turns so your volley is ready the moment yours begins.</p>
+        <p>You get one shot per unsunk ship. You lose ships, you lose firepower. Mark targets during other players' turns so your volley is ready the moment yours begins.</p>
       </div>
       <div class="card">
         <div class="num">03</div>
         <h3>Deduce</h3>
-        <p>The board only shows the round each shot landed in. Each player's tracker shows the rounds their ships were hit. Match the two, and the fleets reveal themselves.</p>
+        <p>The board only shows the round each shot landed in. Each player's tracker shows the rounds their ships were hit. Matching the two reveals your opponent but be vigilent they may but under you.</p>
       </div>
     </div>
 
-    <div class="puzzle">
+    <h3 class="mono" style="margin-top: 56px; font-size: 18px; letter-spacing: 0.04em;">Try it: find GOOSE's Frigate</h3>
+    <div class="puzzle" style="margin-top: 20px;">
       <div>
         <div class="board" id="board" aria-label="Example board, rows A to E and columns 1 to 8"></div>
       </div>
@@ -318,7 +345,7 @@
       <div class="card feature">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
         <h3>Shared battlefield</h3>
-        <p>Up to 11 players on one grid, in three sizes: 10×10, 13×13 and 15×15. Alliances form, betrayals follow.</p>
+        <p>Up to 11 players on one grid, in three sizes: 10×10, 13×13 and 15×15.</p>
       </div>
       <div class="card feature">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/></svg>
@@ -333,17 +360,17 @@
       <div class="card feature">
         <svg viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="11" rx="1.5"/><rect x="17" y="8" width="5" height="12" rx="1"/><path d="M6 19h6"/></svg>
         <h3>Plays anywhere</h3>
-        <p>A command-console layout on desktop, a thumb-friendly one on phones, and installable as an app.</p>
+        <p>A command-console layout on a computer and a thumb-friendly one on your phone. Add it to your home screen and it opens like an app.</p>
       </div>
       <div class="card feature">
         <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
         <h3>Your-turn alerts</h3>
-        <p>Optional push notifications mean games can run all day while everyone gets on with life.</p>
+        <p>No need to finish in one sitting. Turn on notifications and the game tells you when it's your move, so a battle can run all day.</p>
       </div>
       <div class="card feature">
-        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <h3>Cross-platform</h3>
-        <p>Seamlessly battle against friends on Android, iOS, or through any modern web browser. One ocean, every fleet.</p>
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <h3>No sign-up</h3>
+        <p>Pick a callsign and you're in. Invite friends with a four-letter code or a link, with no accounts or passwords to remember.</p>
       </div>
     </div>
   </div>
@@ -360,27 +387,80 @@
       </figure>
       <figure>
         <div class="shot-frame"><img src="img/deploy.jpg" width="1280" height="800" loading="lazy" alt="Deployment screen: ships placed on the grid, shaded squares showing where the Cruiser fits, and the drydock inventory on the left."></div>
-        <figcaption><b>Deploy your fleet</b>Place by hand or auto-deploy, then ready up.</figcaption>
+        <figcaption><b>Deploy your fleet</b>Place by hand or auto-deploy, then Signal Ready.</figcaption>
       </figure>
       <figure>
         <div class="shot-frame"><img src="img/victory.jpg" width="1280" height="800" loading="lazy" alt="Victory screen reading Mission Complete, Victor: MAVERICK, with stars bursting out behind the card."></div>
-        <figcaption><b>Claim victory</b>Last fleet afloat takes the win and the stars.</figcaption>
+        <figcaption><b>Claim victory</b>Last fleet afloat wins</figcaption>
       </figure>
     </div>
   </div>
 </section>
 
+<section id="faq" class="grid-bg">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2>Before you set sail</h2>
+    <div class="faq">
+      <div class="card">
+        <h3>Do I need to download anything?</h3>
+        <p>No. Naval Pursuit runs in any modern browser on your phone, tablet or computer. You'll get the best experience on mobile browsers by installing it as a PWA from the main menu. </p>
+      </div>
+      <div class="card">
+        <h3>Do I need an account?</h3>
+        <p>No. I made this app to be as local as I could so it would be easy as clicking a link to play.</p>
+      </div>
+      <div class="card">
+        <h3>How many people can play?</h3>
+        <p>2 to 11 commanders per sector. I recommend up to 6 in a 10x10, 8 in a 13X13, and 11 in 15X15.</p>
+      </div>
+      <div class="card">
+        <h3>How do I invite friends?</h3>
+        <p>Create a sector and send your friends its four-letter code or the invite link. They join straight from their own device.</p>
+      </div>
+      <div class="card">
+        <h3>Do we have to play at the same time?</h3>
+        <p>Nope, this game is designed to be as flexible and convienent as possible. Sectors last up to 24hrs beteen turns and notifications make sure that you don't forget about your game.</p>
+      </div>
+      <div class="card">
+        <h3>Is there a mobile app?</h3>
+        <p>An Android app is coming soon. Naval Pursuit can be installed as a Progressive Web App (PWA) on Google Chrome and Safari.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+<section class="final">
+  <div class="wrap">
+    <div class="logo-anim">
+      <img class="ship" src="img/logo-ship.svg" alt="">
+      <img class="words" src="img/logo-words.svg" alt="Naval Pursuit">
+    </div>
+    <h2>Ready to take command?</h2>
+    <div class="cta">
+      <a class="btn btn-primary" data-play data-path="?mode=create" href="#">Create a sector</a>
+      <a class="btn btn-ghost" data-play href="#">Join a game</a>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="wrap">
-    <span class="brand"><img src="img/logo.svg" alt="Naval Pursuit" width="104" height="26"></span>
-    <span>v0.6.0 · MIT License</span>
-    <a href="https://github.com/msandy1/multi-battleship">Source on GitHub</a> &bull; <a href="privacy.html">Privacy Policy</a>
+    <span class="brand"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="109" height="26"></span>
+    <div class="links">
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
   </div>
 </footer>
 
 <script>
+  // Where the game is hosted. Every "Play now" style link (data-play) points
+  // here; data-path adds to it, e.g. "?mode=create" opens the Create form.
+  var APP_URL = 'https://game.navalpursuit.com';
+  document.querySelectorAll('[data-play]').forEach(function (a) {
+    a.href = APP_URL + (a.getAttribute('data-path') || '');
+  });
+
   // Example board for the deduction walkthrough (rows A-E, columns 1-8).
   // Shots are [row, col, round]; the Frigate sits on C3-C6.
   (function () {
