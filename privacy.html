@@ -126,10 +126,10 @@
 
 <header class="head">
   <div class="wrap">
-    <div class="eyebrow">Privacy Policy</div>
-    <h1>Your data, briefed plainly.</h1>
-    <p>Naval Pursuit is built to need as little about you as possible: no accounts, no ads, and sectors are deleted from the server when the battle ends. Here's exactly what it does handle.</p>
-    <div class="updated">Last updated: November 7, 2026</div>
+    <div class="eyebrow">Naval Pursuit</div>
+    <h1>Privacy Policy</h1>
+    <p>Naval Pursuit is built to need as little about you as possible: no accounts, no ads, and sectors are deleted from the server when the battle ends. This page explains what it does collect and why.</p>
+    <div class="updated">Last updated: November 8, 2026</div>
   </div>
 </header>
 
@@ -175,29 +175,29 @@
       <tbody>
         <tr><td>Callsign</td><td>The name you choose when you create or join a sector.</td><td>Shown to the other players in that sector. Use a nickname: it doesn't need to be your real name.</td></tr>
         <tr><td>Gameplay</td><td>Your grid size choice, ship placements, shots, ready signals, quick comms lines and emoji, and the stats the game keeps (shots, hits, ships sunk).</td><td>To run the game and show the results to everyone in the sector.</td></tr>
-        <tr><td>Seat credentials</td><td>A random player ID and secret the server issues when you join.</td><td>So you can reconnect to your seat if you close the app or lose signal. They aren't linked to who you are.</td></tr>
-        <tr><td>Notification address</td><td>Only if you turn notifications on: a Firebase registration token (web) or Firebase Installation ID (Android).</td><td>To tell you when it's your turn and about other sector events. See <a href="#notifications">Notifications</a>.</td></tr>
-        <tr><td>IP address</td><td>The network address your connection comes from.</td><td>Held in memory to limit requests and stop abuse. See below.</td></tr>
+        <tr><td>Seat credentials</td><td>Random identifiers the server issues when you join.</td><td>So you can reconnect to your seat if you close the app or lose signal. They aren't linked to who you are.</td></tr>
+        <tr><td>Notification address</td><td>Only if you turn notifications on: an identifier from Google's Firebase service that lets us reach your device.</td><td>To tell you when it's your turn and about other sector events. See <a href="#notifications">Notifications</a>.</td></tr>
+        <tr><td>IP address</td><td>The network address your connection comes from.</td><td>To keep the service running and protect it from abuse.</td></tr>
       </tbody>
     </table>
     </div>
 
     <h3>Server logs</h3>
-    <p>Our game server writes operational logs: server start-up and errors, and a short line for game events, such as a sector being created or closed and in-game events like "MAVERICK hit GOOSE's Frigate", which include callsigns and the sector code. At the normal logging level, these logs don't include IP addresses. The server runs as a container under systemd, so logs go to the host's system journal, which rotates old entries out automatically. Like any website, the network and hosting in front of the server may briefly record connection details such as IP addresses and timestamps for security and diagnostics.</p>
+    <p>Our servers keep operational logs so we can run the service, fix problems and protect it from abuse. These can include callsigns, sector codes, game events and connection details such as IP addresses. Logs are kept only for a short time and then deleted automatically.</p>
 
     <h3>Backups</h3>
-    <p>So a game in progress survives a server restart, the server saves running sectors to disk about once a minute. The backup is encrypted (AES-256-GCM) and holds only sectors that still exist: when a sector is deleted, it drops out of the next backup.</p>
+    <p>So a game in progress survives a server restart, running sectors are backed up in encrypted form. Backups only hold sectors that still exist.</p>
 
     <h3>What we don't collect</h3>
     <p>We don't ask for or collect your name, email, phone number, contacts, photos, precise location, payment details or free-text messages. There are no in-app purchases and no ads.</p>
 
     <h2 id="device"><span class="n">04</span>Stored on your device</h2>
-    <p>Some things are kept only on your own phone or computer (in the browser's local storage for the web app, or the app's private storage on Android) and are never sent to our servers unless noted:</p>
+    <p>Some things are kept only on your own device and aren't sent to our servers unless noted:</p>
     <ul>
       <li><strong>Your callsign</strong>, if you leave "save name" on, so you don't have to type it each time.</li>
-      <li><strong>Your settings</strong>, such as haptics, quick comms muting, hit highlights, notification preferences, quiet hours and muted sectors.</li>
+      <li><strong>Your settings</strong>, such as haptics and notification preferences.</li>
       <li><strong>Your service record</strong>: lifetime stats such as games played and won. These stay on your device.</li>
-      <li><strong>Your current sectors</strong>: the sector code, server address and seat credentials, so you can rejoin. The Android app also keeps results of finished games on your list until you dismiss them.</li>
+      <li><strong>Your current sectors</strong> and their seat credentials, so you can rejoin. The Android app also keeps results of finished games on your list until you dismiss them.</li>
       <li><strong>Whether you've seen</strong> the guided tour, the latest changelog and this policy.</li>
     </ul>
     <p><strong>Transfers.</strong> If you choose to move your seat or service record to another device, the app makes a code or link holding your callsign, stats and, for a seat, its credentials. It's only shared where you send it, so treat it like a password.</p>
@@ -206,10 +206,10 @@
     <h2 id="notifications"><span class="n">05</span>Notifications</h2>
     <p>Notifications are optional. They let a battle run all day: we'll tell you when it's your turn, when everyone's ready or combat begins, when your fleet is sunk, remind you about an untaken turn, and warn you before a sector closes.</p>
     <ul>
-      <li><strong>How they work.</strong> We use Google's Firebase Cloud Messaging (FCM). When you allow notifications, Firebase gives your browser or app an address (a registration token on the web, a Firebase Installation ID on Android), which your device sends to the game server with your seat. The server sends that address the notification (the sector code and what happened) through Firebase.</li>
-      <li><strong>Web app.</strong> Nothing is requested until you turn notifications on and your browser asks for permission. To deliver notifications, the app's service worker loads Firebase and Workbox scripts from Google's servers (gstatic.com and storage.googleapis.com).</li>
+      <li><strong>How they work.</strong> We use Google's Firebase Cloud Messaging. When you allow notifications, Firebase gives your device an identifier, which is sent to the game server with your seat so it can notify you about that sector.</li>
+      <li><strong>Web app.</strong> Nothing is requested until you turn notifications on and your browser asks for permission. Delivering them uses Google's Firebase service.</li>
       <li><strong>Android app.</strong> Android 13 and later asks for your permission first. You can turn notifications off in the app's settings, set quiet hours, mute a sector, or choose which kinds you get in Android's settings.</li>
-      <li><strong>Deletion.</strong> The server stores the notification address with your seat in that sector only, and deletes it when the sector is deleted or the address stops working. Undelivered notifications are dropped after 24 hours.</li>
+      <li><strong>Deletion.</strong> The server keeps this identifier only for the sector it belongs to, and deletes it with the sector.</li>
     </ul>
 
     <h2 id="analytics"><span class="n">06</span>Analytics</h2>
@@ -221,7 +221,7 @@
     <ul>
       <li><strong>Other players in your sector</strong> see your callsign, whether you're ready and connected, your quick comms, your shots, the round numbers where shots landed, damage to your fleet and your stats, as the rules of the game show them. They never see where your unhit ships are.</li>
       <li><strong>Service providers.</strong> Google (Firebase) delivers notifications and, in the Android app, provides analytics. This website is hosted on GitHub Pages, which may log visitors' IP addresses for security; see the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</li>
-      <li><strong>Server administrator.</strong> The server's admin console, which only the operator can reach, shows active sectors and server stats so problems can be fixed.</li>
+      <li><strong>People who run the service</strong> can see active sectors when that's needed to operate it and fix problems.</li>
       <li><strong>The law.</strong> We'd disclose information only if legally required to, and given how little we keep, there'd rarely be anything to disclose.</li>
     </ul>
     <p>We don't sell or rent personal information, and we don't share it for advertising.</p>
@@ -239,7 +239,7 @@
       </tbody>
     </table>
     </div>
-    <p>A host can also delete their sector at any time. When a sector is deleted, its callsigns, fleets, shots, logs, seat credentials and notification addresses go with it. Server log lines rotate out of the system journal on the host's normal schedule. IP addresses used for rate limiting are kept in memory only and expire within minutes. Data stored on your device stays until you clear it. Firebase keeps analytics data according to Google's retention settings.</p>
+    <p>A host can also delete their sector at any time. When a sector is deleted, everything about it goes with it. Server logs are kept briefly and deleted automatically. Data stored on your device stays until you clear it. Firebase keeps analytics data according to Google's retention settings.</p>
 
     <h2 id="permissions"><span class="n">09</span>Permissions</h2>
     <h3>Android app</h3>
@@ -265,7 +265,7 @@
     </ul>
 
     <h2 id="security"><span class="n">11</span>Security</h2>
-    <p>Our servers use encrypted connections (HTTPS and secure WebSockets), the game server runs in a locked-down container, backups are encrypted, and the admin console isn't exposed to the internet. Seat credentials are random and unrelated to who you are. No system is perfectly secure, but there's very little to protect in the first place.</p>
+    <p>We use encrypted connections, encrypt game backups, and limit who can access our servers. Seat credentials are random and unrelated to who you are. No system is perfectly secure, but we collect very little in the first place.</p>
 
     <h2 id="children"><span class="n">12</span>Children</h2>
     <p>Naval Pursuit isn't directed at children under 13, and we don't knowingly collect personal information from them. Players never need to give a real name, and chat is limited to ready-made lines. If you believe a child has given us personal information, contact us and we'll delete it.</p>
