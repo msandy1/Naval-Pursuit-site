@@ -1,61 +1,297 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - Naval Pursuit</title>
-    <link rel="icon" href="img/icon.svg" type="image/svg+xml">
-    <link rel="icon" href="img/icon-32.png" type="image/png" sizes="32x32">
-    <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            color: #333;
-        }
-        h1, h2 {
-            color: #0f172a;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · Naval Pursuit</title>
+<meta name="description" content="What Naval Pursuit collects, why, and how long it keeps it. No accounts, no ads, and sectors are deleted when the battle ends.">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #0f172a;
+    --line: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #64748b;
+    --green: #2BE36B;
+    --green-hover: #89F5AF;
+    --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Courier New", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --radius: 10px;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; color: var(--green-hover); }
+  .wrap {
+    max-width: 1120px; margin: 0 auto;
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+  .eyebrow { font: 600 12px/1 var(--mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--green); }
+
+  nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(51, 65, 85, 0.6); }
+  nav .wrap { display: flex; align-items: center; gap: 24px; height: 60px; }
+  .brand { display: flex; align-items: center; line-height: 0; }
+  .brand img { width: auto; height: 34px; }
+  nav .links { margin-left: auto; display: flex; align-items: center; gap: 22px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  nav .links a { color: var(--muted); }
+  nav .links a:hover, nav .links a[aria-current] { color: var(--text); text-decoration: none; }
+  nav .links a.play { color: var(--green); border: 1px solid var(--green); border-radius: 6px; padding: 8px 14px; background: rgba(43, 227, 107, 0.12); }
+  nav .links a.play:hover { background: rgba(43, 227, 107, 0.24); }
+
+  .head {
+    padding: 64px 0 40px; border-bottom: 1px solid var(--line);
+    background-image:
+      radial-gradient(ellipse at 70% 30%, rgba(43, 227, 107, 0.10), transparent 55%),
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+  }
+  .head h1 { font: 700 clamp(30px, 5vw, 46px)/1.1 var(--mono); letter-spacing: 0.02em; margin: 14px 0 12px; }
+  .head p { color: var(--muted); font-size: 18px; max-width: 680px; margin: 0; }
+  .head .updated { margin-top: 18px; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; padding: 48px 0 88px; }
+  .toc { position: sticky; top: 84px; align-self: start; font: 13px/1.5 var(--mono); }
+  .toc b { display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc li { counter-increment: toc; margin: 0 0 8px; }
+  .toc a { color: var(--muted); }
+  .toc a::before { content: counter(toc, decimal-leading-zero) "  "; color: var(--dim); }
+  .toc a:hover { color: var(--text); text-decoration: none; }
+
+  article { max-width: 720px; }
+  article h2 { font: 700 22px/1.25 var(--mono); letter-spacing: 0.03em; margin: 48px 0 12px; scroll-margin-top: 84px; }
+  article h2:first-child { margin-top: 0; }
+  article h2 .n { color: var(--green); margin-right: 10px; }
+  article h3 { font: 700 16px var(--mono); letter-spacing: 0.03em; margin: 26px 0 6px; }
+  article p, article li { color: #cbd5e1; }
+  article ul { padding-left: 20px; }
+  article li { margin: 8px 0; }
+  article strong { color: var(--text); }
+
+  .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 0 0 8px; }
+  .summary div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; font-size: 15px; color: var(--muted); }
+  .summary b { display: block; font: 700 14px var(--mono); color: var(--text); letter-spacing: 0.03em; margin-bottom: 2px; }
+
+  .table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 14px 0; }
+  .table th, .table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .table th { font: 600 11px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+  .table td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .table td { color: #cbd5e1; }
+  .scroll { overflow-x: auto; }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--dim); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+  footer .brand img { height: 26px; }
+  footer .links { margin-left: auto; display: flex; gap: 22px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; }
+    .toc { position: static; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); padding: 16px 18px; }
+    .summary { grid-template-columns: 1fr; }
+    .table td:first-child { white-space: normal; }
+    footer .links { margin-left: 0; }
+    nav .links a:not(.play) { display: none; }
+  }
+  @media (max-width: 600px) {
+    .table.stack thead { display: none; }
+    .table.stack tr { display: block; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .table.stack td { display: block; border: 0; padding: 2px 0; }
+    .table.stack td:first-child { font: 700 14px var(--mono); margin-bottom: 4px; }
+    .table.stack td:last-child { color: var(--muted); }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
 <body>
-    <h1>Privacy Policy for Naval Pursuit</h1>
-    <p><strong>Last updated:</strong> November 2026</p>
 
-    <p>Welcome to Naval Pursuit. This Privacy Policy applies to the Naval Pursuit Android application and the Naval Pursuit web application (collectively, the "App"). We are committed to protecting your privacy and ensuring you understand what data is collected and how it is used.</p>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="143" height="34"></a>
+    <div class="links">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#faq">FAQ</a>
+      <a class="play" data-play href="#">Play now</a>
+    </div>
+  </div>
+</nav>
 
-    <h2>1. Data Collection and Usage</h2>
-    <p>Naval Pursuit is designed to be a lightweight, multiplayer game. The types of data collected are minimal:</p>
+<header class="head">
+  <div class="wrap">
+    <div class="eyebrow">Naval Pursuit</div>
+    <h1>Privacy Policy</h1>
+    <p>Naval Pursuit is built to need as little about you as possible: no accounts, no ads, and sectors are deleted from the server when the battle ends. This page explains what it does collect and why.</p>
+    <div class="updated">Last updated: November 8, 2026</div>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <aside class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <ol>
+      <li><a href="#summary">At a glance</a></li>
+      <li><a href="#scope">Who this covers</a></li>
+      <li><a href="#collect">What we collect</a></li>
+      <li><a href="#device">Stored on your device</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#analytics">Analytics</a></li>
+      <li><a href="#sharing">Who sees what</a></li>
+      <li><a href="#retention">How long it's kept</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+      <li><a href="#choices">Your choices</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#children">Children</a></li>
+      <li><a href="#changes">Changes</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </aside>
+
+  <article>
+    <h2 id="summary"><span class="n">01</span>At a glance</h2>
+    <div class="summary">
+      <div><b>No accounts</b>You pick a callsign. There's no email, password, phone number or real name.</div>
+      <div><b>No ads, no selling</b>Nothing about you is sold, rented or used for advertising.</div>
+      <div><b>Games are temporary</b>A sector and everything in it is deleted when the game ends or goes quiet.</div>
+      <div><b>No free-text chat</b>Quick comms are ready-made lines and emoji, so there's no typed chat to collect.</div>
+    </div>
+
+    <h2 id="scope"><span class="n">02</span>Who this covers</h2>
+    <p>This policy covers the Naval Pursuit web app at <a href="https://game.navalpursuit.com">game.navalpursuit.com</a> (including when it's installed to your home screen), the Naval Pursuit Android app, the game servers we run, and this website. Together we call them "Naval Pursuit" or "the App". Naval Pursuit is made by an independent developer, referred to here as "we" or "us".</p>
+    <p><strong>Servers run by other people.</strong> The Android app can connect to any Naval Pursuit server you add by address or invite link. If you play on a server someone else runs, that server's operator, not us, controls the game data and logs on it.</p>
+
+    <h2 id="collect"><span class="n">03</span>What we collect</h2>
+    <p>When you create or join a sector, your device sends the game server what it needs to run the battle:</p>
+    <div class="scroll">
+    <table class="table stack">
+      <thead><tr><th>Data</th><th>What it is</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Callsign</td><td>The name you choose when you create or join a sector.</td><td>Shown to the other players in that sector. Use a nickname: it doesn't need to be your real name.</td></tr>
+        <tr><td>Gameplay</td><td>Your grid size choice, ship placements, shots, ready signals, quick comms lines and emoji, and the stats the game keeps (shots, hits, ships sunk).</td><td>To run the game and show the results to everyone in the sector.</td></tr>
+        <tr><td>Seat credentials</td><td>Random identifiers the server issues when you join.</td><td>So you can reconnect to your seat if you close the app or lose signal. They aren't linked to who you are.</td></tr>
+        <tr><td>Notification address</td><td>Only if you turn notifications on: an identifier from Google's Firebase service that lets us reach your device.</td><td>To tell you when it's your turn and about other sector events. See <a href="#notifications">Notifications</a>.</td></tr>
+        <tr><td>IP address</td><td>The network address your connection comes from.</td><td>To keep the service running and protect it from abuse.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Server logs</h3>
+    <p>Our servers keep operational logs so we can run the service, fix problems and protect it from abuse. These can include callsigns, sector codes, game events and connection details such as IP addresses. Logs are kept only for a short time and then deleted automatically.</p>
+
+    <h3>Backups</h3>
+    <p>So a game in progress survives a server restart, running sectors are backed up in encrypted form. Backups only hold sectors that still exist.</p>
+
+    <h3>What we don't collect</h3>
+    <p>We don't ask for or collect your name, email, phone number, contacts, photos, precise location, payment details or free-text messages. There are no in-app purchases and no ads.</p>
+
+    <h2 id="device"><span class="n">04</span>Stored on your device</h2>
+    <p>Some things are kept only on your own device and aren't sent to our servers unless noted:</p>
     <ul>
-        <li><strong>Game Data:</strong> When you host or join a game sector, gameplay actions (such as ship placements, attacks, and chat messages) are transmitted over the internet to the game server you are connected to.</li>
-        <li><strong>Server Logs:</strong> The game server runs via Podman Quadlet. Standard operational logs (which may include IP addresses and connection timestamps) are captured and stored in the host system's systemd journal for diagnostic and security purposes.</li>
-        <li><strong>Device Identifiers (Push Notifications):</strong> If you use the Android app, it utilizes Firebase Cloud Messaging (FCM) to deliver game updates (such as when it is your turn or if combat has begun). To enable this, a Firebase Installation ID is generated and sent to the game server.</li>
-        <li><strong>Analytics:</strong> The Android app includes Firebase Analytics to help us understand general usage and crash reports to improve the App. This data is aggregated and does not personally identify you.</li>
+      <li><strong>Your callsign</strong>, if you leave "save name" on, so you don't have to type it each time.</li>
+      <li><strong>Your settings</strong>, such as haptics and notification preferences.</li>
+      <li><strong>Your service record</strong>: lifetime stats such as games played and won. These stay on your device.</li>
+      <li><strong>Your current sectors</strong> and their seat credentials, so you can rejoin. The Android app also keeps results of finished games on your list until you dismiss them.</li>
+      <li><strong>Whether you've seen</strong> the guided tour, the latest changelog and this policy.</li>
+    </ul>
+    <p><strong>Transfers.</strong> If you choose to move your seat or service record to another device, the app makes a code or link holding your callsign, stats and, for a seat, its credentials. It's only shared where you send it, so treat it like a password.</p>
+    <p><strong>Android backup.</strong> If Android backup is on, your settings and service record may be included in your device's Google backup, so they come back on a new phone. Seat credentials are excluded.</p>
+
+    <h2 id="notifications"><span class="n">05</span>Notifications</h2>
+    <p>Notifications are optional. They let a battle run all day: we'll tell you when it's your turn, when everyone's ready or combat begins, when your fleet is sunk, remind you about an untaken turn, and warn you before a sector closes.</p>
+    <ul>
+      <li><strong>How they work.</strong> We use Google's Firebase Cloud Messaging. When you allow notifications, Firebase gives your device an identifier, which is sent to the game server with your seat so it can notify you about that sector.</li>
+      <li><strong>Web app.</strong> Nothing is requested until you turn notifications on and your browser asks for permission. Delivering them uses Google's Firebase service.</li>
+      <li><strong>Android app.</strong> Android 13 and later asks for your permission first. You can turn notifications off in the app's settings, set quiet hours, mute a sector, or choose which kinds you get in Android's settings.</li>
+      <li><strong>Deletion.</strong> The server keeps this identifier only for the sector it belongs to, and deletes it with the sector.</li>
     </ul>
 
-    <h2>2. Permissions (Android App)</h2>
-    <p>The Android app requests the following permissions for core functionality:</p>
+    <h2 id="analytics"><span class="n">06</span>Analytics</h2>
+    <p><strong>The web app has no analytics and no tracking cookies.</strong></p>
+    <p><strong>The Android app</strong> includes Google Analytics for Firebase, to help us see how many people play, which devices and Android versions to support, and how the app is used. Firebase collects this automatically, and it can include an app instance ID, your device model, Android version, app version, language, an approximate location (country or region, worked out from your IP address), and events such as the first time you open the app and how long sessions last. We look at this in aggregate. We don't use it to identify you, don't combine it with your callsign or game data, and don't use it for advertising. The app doesn't collect your device's advertising ID, and ad personalisation is turned off.</p>
+    <p>Google processes this data under its own terms. See <a href="https://policies.google.com/privacy">Google's Privacy Policy</a> and <a href="https://firebase.google.com/support/privacy">Privacy and Security in Firebase</a>.</p>
+
+    <h2 id="sharing"><span class="n">07</span>Who sees what</h2>
     <ul>
-        <li><strong>Internet:</strong> Required to connect to multiplayer game servers.</li>
-        <li><strong>Vibrate:</strong> Used to provide haptic feedback during gameplay (e.g., when a ship is hit).</li>
-        <li><strong>Notifications:</strong> Required to notify you of turn updates and game events when the app is in the background.</li>
+      <li><strong>Other players in your sector</strong> see your callsign, whether you're ready and connected, your quick comms, your shots, the round numbers where shots landed, damage to your fleet and your stats, as the rules of the game show them. They never see where your unhit ships are.</li>
+      <li><strong>Service providers.</strong> Google (Firebase) delivers notifications and, in the Android app, provides analytics. This website is hosted on GitHub Pages, which may log visitors' IP addresses for security; see the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub Privacy Statement</a>.</li>
+      <li><strong>People who run the service</strong> can see active sectors when that's needed to operate it and fix problems.</li>
+      <li><strong>The law.</strong> We'd disclose information only if legally required to, and given how little we keep, there'd rarely be anything to disclose.</li>
+    </ul>
+    <p>We don't sell or rent personal information, and we don't share it for advertising.</p>
+
+    <h2 id="retention"><span class="n">08</span>How long it's kept</h2>
+    <p>We don't keep a database of players, accounts or past games. Everything about a sector lives on the server only while that sector exists, and the server deletes it automatically:</p>
+    <div class="scroll">
+    <table class="table">
+      <thead><tr><th>Sector state</th><th>Deleted after</th></tr></thead>
+      <tbody>
+        <tr><td>Created, nobody else joined</td><td>30 minutes</td></tr>
+        <tr><td>Deploying ships</td><td>12 hours</td></tr>
+        <tr><td>In combat</td><td>24 hours with no shot fired</td></tr>
+        <tr><td>Game over</td><td>10 minutes after the last shot</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>A host can also delete their sector at any time. When a sector is deleted, everything about it goes with it. Server logs are kept briefly and deleted automatically. Data stored on your device stays until you clear it. Firebase keeps analytics data according to Google's retention settings.</p>
+
+    <h2 id="permissions"><span class="n">09</span>Permissions</h2>
+    <h3>Android app</h3>
+    <ul>
+      <li><strong>Internet</strong>, to connect to game servers.</li>
+      <li><strong>Vibrate</strong>, for haptic feedback such as your volley landing or your fleet being hit. You can turn haptics off in Settings.</li>
+      <li><strong>Notifications</strong>, to tell you about your turn and sector events while the app is closed. This is optional.</li>
+    </ul>
+    <h3>Web app</h3>
+    <ul>
+      <li><strong>Notifications</strong>, only if you turn them on.</li>
+      <li><strong>Keep screen awake</strong>, so your screen doesn't dim mid-battle. No data is involved.</li>
+      <li><strong>Clipboard</strong>, only when you tap to copy an invite link or transfer code.</li>
     </ul>
 
-    <h2>3. Third-Party Services</h2>
-    <p>The App uses Google Firebase for analytics and push notifications. Firebase may collect anonymous usage data and unique installation IDs to function. Please review <a href="https://policies.google.com/privacy">Google's Privacy Policy</a> for more information on how they handle this data.</p>
+    <h2 id="choices"><span class="n">10</span>Your choices</h2>
+    <ul>
+      <li><strong>Play without notifications.</strong> Leave them off, or turn them off at any time in Settings or your device's settings.</li>
+      <li><strong>Leave a sector</strong> to stop taking part. Your seat's data is deleted with the sector.</li>
+      <li><strong>Clear what's on your device</strong> by clearing the site's data in your browser, or the app's storage in Android's settings, or by uninstalling the app.</li>
+      <li><strong>Stop analytics on Android</strong> by uninstalling the app. Analytics data isn't linked to your callsign or games.</li>
+      <li><strong>Ask us.</strong> Because there are no accounts, we usually can't tell which data is yours, and sectors are deleted on their own. If you have a request about your data, including under laws like the GDPR or CCPA, <a href="#contact">contact us</a> with the sector code and callsign and we'll help.</li>
+    </ul>
 
-    <h2>4. Data Retention</h2>
-    <p>Gameplay data is only held on the specific server hosting that game sector. We do not maintain a centralized database of user accounts or game histories. Notification tokens (Installation IDs) are discarded when a game concludes or you leave the sector. Server logs maintained in the systemd journal are stored temporarily and are routinely rotated out by the host operating system.</p>
+    <h2 id="security"><span class="n">11</span>Security</h2>
+    <p>We use encrypted connections, encrypt game backups, and limit who can access our servers. Seat credentials are random and unrelated to who you are. No system is perfectly secure, but we collect very little in the first place.</p>
 
-    <h2>5. Children's Privacy</h2>
-    <p>Naval Pursuit does not knowingly collect personally identifiable information from children under 13. If you believe a child has provided us with personal information, please contact us so it can be deleted.</p>
+    <h2 id="children"><span class="n">12</span>Children</h2>
+    <p>Naval Pursuit isn't directed at children under 13, and we don't knowingly collect personal information from them. Players never need to give a real name, and chat is limited to ready-made lines. If you believe a child has given us personal information, contact us and we'll delete it.</p>
 
-    <h2>6. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Changes will be posted on this page.</p>
+    <h2 id="changes"><span class="n">13</span>Changes to this policy</h2>
+    <p>If what the App collects changes, we'll update this page and the date at the top. For significant changes, we'll also note them in the app's "What's New".</p>
 
-    <h2>7. Contact Us</h2>
-    <p>If you have any questions or concerns regarding this Privacy Policy, please contact the developer.</p>
+    <h2 id="contact"><span class="n">14</span>Contact</h2>
+    <p>Questions or requests about this policy or your data? Email us at <a href="mailto:navalpursuitdev@gmail.com">navalpursuitdev@gmail.com</a> and we'll get back to you.</p>
+  </article>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="109" height="26"></a>
+    <div class="links">
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var APP_URL = 'https://game.navalpursuit.com';
+  document.querySelectorAll('[data-play]').forEach(function (a) {
+    a.href = APP_URL + (a.getAttribute('data-path') || '');
+  });
+</script>
 </body>
 </html>
