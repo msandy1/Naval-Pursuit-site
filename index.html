@@ -201,6 +201,9 @@
   .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 40px; }
   .faq h3 { font: 700 16px var(--mono); letter-spacing: 0.03em; margin: 0 0 8px; }
 
+  /* About */
+  .about p { color: var(--muted); max-width: 720px; margin: 18px 0 0; }
+
   /* Closing call to action */
   .final { text-align: center; }
   .final .logo-anim { margin: 0 auto 8px; width: 160px; }
@@ -246,6 +249,7 @@
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
       <a href="#faq">FAQ</a>
+      <a href="#about">About</a>
       <a class="play" data-play href="#">Play now</a>
     </div>
   </div>
@@ -360,7 +364,7 @@
       <div class="card feature">
         <svg viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="11" rx="1.5"/><rect x="17" y="8" width="5" height="12" rx="1"/><path d="M6 19h6"/></svg>
         <h3>Play anywhere</h3>
-        <p>A command-console layout on a computer and a thumb-friendly one on your phone. Add it to your home screen and it opens like an app.</p>
+        <p>A command-console layout on a computer and a thumb-friendly one on your phone.</p>
       </div>
       <div class="card feature">
         <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
@@ -430,6 +434,17 @@
   </div>
 </section>
 
+<section id="about" class="about">
+  <div class="wrap">
+    <div class="eyebrow">About</div>
+    <h2>Made for game night</h2>
+    <p>My in-laws started it. Back in 2025, we started playing the paper version of this game together and it quickly be came a family favorite. However there were two recurring issues: shots had to be tracked manually and playing remotely was challenging, especially with games lasting sometimes an hour or more. So I decided to come up with a digital version that would serve both of those needs. I started December 2025 and finished the first version in February 2026. That version remained the same for most of the year outside of regular dependancy updates. This version was created out of the learning from the previous few months playing it.</p>
+    <p>You might wonder what credentials I have and what percent of the code I wrote. Well, I wrote little of this code. I designed the game and directed its development, and built it with help from AI coding assistants: Jules, Gemini, and Claude. I work as an IT administrator and I have some experience writing my own programs with Python. I let the AI do the majority of the coding and I made the design and architecture decisions and reviewed AI suggestions when they were given. I have, to the best of my knowledge and ability, tried to make this as securely designed and hardened and safe to use as I know how.</p>
+    <p>If you haven't turned tail and run yet, then please give the game a try. I have put a lot of time and hours into it, and it is a lot of fun. Also stay tuned for the Android mobile app that is coming soon!</p>
+    <p>— Matthew Sandau</p>
+  </div>
+</section>
+
 <section class="final">
   <div class="wrap">
     <div class="logo-anim">
@@ -447,6 +462,7 @@
 <footer>
   <div class="wrap">
     <span class="brand"><img src="img/logo-horizontal.svg" alt="Naval Pursuit" width="109" height="26"></span>
+    <span>© 2025–2026 Matthew Sandau. All rights reserved.</span>
     <div class="links">
       <a href="privacy.html">Privacy Policy</a>
     </div>
