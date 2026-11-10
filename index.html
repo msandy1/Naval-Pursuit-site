@@ -201,6 +201,22 @@
   .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 40px; }
   .faq h3 { font: 700 16px var(--mono); letter-spacing: 0.03em; margin: 0 0 8px; }
 
+  /* Android early access sign-up */
+  .beta { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .beta .lede { margin: 0; }
+  .beta ol { color: var(--muted); padding-left: 20px; margin: 18px 0 0; }
+  .beta ol li { margin: 6px 0; }
+  .beta-form label { display: block; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .beta-form label span { color: var(--dim); text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .beta-form input {
+    width: 100%; margin: 0 0 18px; padding: 12px 14px; border-radius: 6px;
+    border: 1px solid #475569; background: #020617; color: var(--text); font: 16px var(--sans);
+  }
+  .beta-form input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+  .beta-form .hint { margin: -12px 0 18px; font-size: 13px; color: var(--dim); }
+  .beta-form .btn { cursor: pointer; }
+  .beta-form .fallback { margin: 16px 0 0; font-size: 14px; color: var(--muted); }
+
   /* About */
   .about p { color: var(--muted); max-width: 720px; margin: 18px 0 0; }
 
@@ -221,7 +237,7 @@
     .hero { padding-top: 48px; }
     .hero .wrap, .puzzle { grid-template-columns: 1fr; gap: 40px; }
     .phone { right: -6px; bottom: -40px; width: 34%; }
-    .steps, .features, .gallery, .faq { grid-template-columns: 1fr; }
+    .steps, .features, .gallery, .faq, .beta { grid-template-columns: 1fr; }
     .hero .logo-anim { width: 160px; }
     footer .links { margin-left: 0; }
     .stats .wrap { grid-template-columns: repeat(2, 1fr); }
@@ -269,7 +285,7 @@
         <a class="btn btn-primary" data-play href="#">Play now</a>
         <a class="btn btn-ghost" href="#how">How it works</a>
       </div>
-      <p class="note">Play in your browser · Android app coming soon</p>
+      <p class="note">Play in your browser · <a href="#android">Android early access open</a></p>
     </div>
     <div class="shots">
       <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -428,9 +444,35 @@
       </div>
       <div class="card">
         <h3>Is there a mobile app?</h3>
-        <p>An Android app is coming soon. Naval Pursuit can be installed as a Progressive Web App (PWA) on Google Chrome and Safari.</p>
+        <p>An Android app is in early access testing, and you can <a href="#android">sign up to join the testers</a>. Naval Pursuit can also be installed as a Progressive Web App (PWA) on Google Chrome and Safari.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="android">
+  <div class="wrap beta">
+    <div>
+      <div class="eyebrow">Android early access</div>
+      <h2>Join the test fleet</h2>
+      <p class="lede">The Naval Pursuit Android app is in early access testing on Google Play. Want to try it before everyone else? Sign up to be added to the testing group.</p>
+      <ol>
+        <li>Fill in the form. It opens a pre-written email in your mail app.</li>
+        <li>Hit send. I'll add your Google account to the testers list.</li>
+        <li>You'll get a link to install the app from Google Play.</li>
+      </ol>
+    </div>
+    <form class="card beta-form" id="beta-form" novalidate>
+      <label for="beta-email">Google account email</label>
+      <input id="beta-email" name="email" type="email" autocomplete="email" required placeholder="you@gmail.com">
+      <p class="hint">The address you use for Google Play on your Android phone.</p>
+      <label for="beta-name">Name or callsign <span>(optional)</span></label>
+      <input id="beta-name" name="callsign" type="text" autocomplete="nickname" maxlength="60">
+      <label for="beta-device">Phone model <span>(optional)</span></label>
+      <input id="beta-device" name="device" type="text" maxlength="60" placeholder="e.g. Pixel 8, Galaxy S24">
+      <button class="btn btn-primary" type="submit">Sign up by email</button>
+      <p class="fallback">Mail app didn't open? Email <a data-beta-mail href="mailto:navalpursuitdev@gmail.com">navalpursuitdev@gmail.com</a> with the subject "Android early access".</p>
+    </form>
   </div>
 </section>
 
@@ -440,7 +482,7 @@
     <h2>Made for game night</h2>
     <p>My in-laws started it. Back in 2025, we started playing the paper version of this game together and it quickly be came a family favorite. However there were two recurring issues: shots had to be tracked manually and playing remotely was challenging, especially with games lasting sometimes an hour or more. So I decided to come up with a digital version that would serve both of those needs. I started December 2025 and finished the first version in February 2026. That version remained the same for most of the year outside of regular dependancy updates. This version was created out of the learning from the previous few months playing it.</p>
     <p>You might wonder what credentials I have and what percent of the code I wrote. Well, I wrote little of this code. I designed the game and directed its development, and built it with help from AI coding assistants: Jules, Gemini, and Claude. I work as an IT administrator and I have some experience writing my own programs with Python. I let the AI do the majority of the coding and I made the design and architecture decisions and reviewed AI suggestions when they were given. I have, to the best of my knowledge and ability, tried to make this as securely designed and hardened and safe to use as I know how.</p>
-    <p>If you haven't turned tail and run yet, then please give the game a try. I have put a lot of time and hours into it, and it is a lot of fun. Also stay tuned for the Android mobile app that is coming soon!</p>
+    <p>If you haven't turned tail and run yet, then please give the game a try. I have put a lot of time and hours into it, and it is a lot of fun. Also, the Android mobile app is in early access, so <a href="#android">sign up to test it</a>!</p>
     <p>— Matthew Sandau</p>
   </div>
 </section>
@@ -504,6 +546,28 @@
       var solved = board.classList.toggle('solved');
       btn.textContent = solved ? 'Hide the answer' : 'Show the answer';
       btn.setAttribute('aria-pressed', String(solved));
+    });
+  })();
+
+  // Android early access sign-up: builds a pre-filled email from the form.
+  (function () {
+    var TO = 'navalpursuitdev@gmail.com';
+    var SUBJECT = 'Android early access';
+    function mailto(email, name, device) {
+      var body = 'Hi, please add me to the Naval Pursuit Android testing group.\n\n' +
+        'Google account email: ' + (email || '') + '\n' +
+        'Name or callsign: ' + (name || '') + '\n' +
+        'Phone model: ' + (device || '') + '\n';
+      return 'mailto:' + TO + '?subject=' + encodeURIComponent(SUBJECT) +
+        '&body=' + encodeURIComponent(body);
+    }
+    var form = document.getElementById('beta-form');
+    document.querySelectorAll('[data-beta-mail]').forEach(function (a) { a.href = mailto(); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email;
+      if (!email.checkValidity()) { email.reportValidity(); email.focus(); return; }
+      window.location.href = mailto(email.value.trim(), form.callsign.value.trim(), form.device.value.trim());
     });
   })();
 </script>
