@@ -100,7 +100,11 @@
   .btn-primary:hover { color: var(--green-hover); }
 
   /* Hero */
-  .hero { padding: 72px 0 96px; overflow: hidden; }
+  .hero { padding: 72px 0 96px; overflow: hidden; position: relative; }
+  /* The game menu's living sea (js/sea.js); the grid-bg underneath shows
+     without JavaScript. */
+  #sea { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero > .wrap { position: relative; z-index: 1; }
   .hero .wrap { display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center; }
   .hero h1 { font: 700 clamp(34px, 5.4vw, 58px)/1.08 var(--mono); letter-spacing: 0.02em; margin: 18px 0 20px; }
   .hero h1 em { font-style: normal; color: var(--green-hi); text-shadow: 0 0 24px rgba(43, 227, 107, 0.35); }
@@ -272,8 +276,9 @@
 </nav>
 
 <header class="hero grid-bg" id="top">
+  <canvas id="sea" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div>
+    <div data-sea-avoid="scrim">
       <div class="logo-anim">
         <img class="ship" src="img/logo-ship.svg" alt="">
         <img class="words" src="img/logo-words.svg" alt="Naval Pursuit">
@@ -287,7 +292,7 @@
       </div>
       <p class="note">Play in your browser · <a href="#android">Android early access open</a></p>
     </div>
-    <div class="shots">
+    <div class="shots" data-sea-avoid>
       <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="shot-frame">
         <div class="bar"><i></i><i></i><i></i></div>
@@ -571,5 +576,6 @@
     });
   })();
 </script>
+<script src="js/sea.js" defer></script>
 </body>
 </html>
