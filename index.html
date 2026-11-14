@@ -100,7 +100,11 @@
   .btn-primary:hover { color: var(--green-hover); }
 
   /* Hero */
-  .hero { padding: 72px 0 96px; overflow: hidden; }
+  .hero { padding: 72px 0 96px; overflow: hidden; position: relative; }
+  /* The game menu's living sea (js/sea.js); the grid-bg underneath shows
+     without JavaScript. */
+  #sea { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero > .wrap { position: relative; z-index: 1; }
   .hero .wrap { display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center; }
   .hero h1 { font: 700 clamp(34px, 5.4vw, 58px)/1.08 var(--mono); letter-spacing: 0.02em; margin: 18px 0 20px; }
   .hero h1 em { font-style: normal; color: var(--green-hi); text-shadow: 0 0 24px rgba(43, 227, 107, 0.35); }
@@ -272,8 +276,9 @@
 </nav>
 
 <header class="hero grid-bg" id="top">
+  <canvas id="sea" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div>
+    <div data-sea-avoid="scrim">
       <div class="logo-anim">
         <img class="ship" src="img/logo-ship.svg" alt="">
         <img class="words" src="img/logo-words.svg" alt="Naval Pursuit">
@@ -287,11 +292,11 @@
       </div>
       <p class="note">Play in your browser · <a href="#android">Android early access open</a></p>
     </div>
-    <div class="shots">
+    <div class="shots" data-sea-avoid>
       <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="shot-frame">
         <div class="bar"><i></i><i></i><i></i></div>
-        <img src="img/battle.jpg" width="1280" height="800" alt="Desktop battle view: a ten by ten grid full of round numbers with two squares aimed, the fleet trackers on the left and the Fire button on the right.">
+        <img src="img/battle.jpg" width="1280" height="800" alt="Desktop battle view: a ten by ten grid full of round numbers with two squares aimed, beside a panel with ACE's fleet pinned on the Targets page, the Comms feed below it and the Fire button at the foot.">
       </div>
       <div class="phone">
         <img src="img/trackers-mobile.jpg" width="780" height="1688" alt="The same battle on a phone: the grid above, and the Targets tab below with ACE's fleet pinned, showing the rounds its Frigate was hit in, over a row of enemy fleet cards with damage bars.">
@@ -319,7 +324,7 @@
       <div class="card">
         <div class="num">01</div>
         <h3>Deploy</h3>
-        <p>Place your five ships horizontally, vertically or diagonally, or let the game auto-deploy them for you. Signal Ready, and the host starts the battle.</p>
+        <p>Place your five ships horizontally, vertically or diagonally, or let the game auto-configure them for you. Mark your ships ready, and the host starts the battle.</p>
       </div>
       <div class="card">
         <div class="num">02</div>
@@ -380,7 +385,7 @@
       <div class="card feature">
         <svg viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="11" rx="1.5"/><rect x="17" y="8" width="5" height="12" rx="1"/><path d="M6 19h6"/></svg>
         <h3>Play anywhere</h3>
-        <p>A command-console layout on a computer and a thumb-friendly one on your phone.</p>
+        <p>Consistent and responsive interface on mobile and desktop.</p>
       </div>
       <div class="card feature">
         <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
@@ -406,11 +411,11 @@
         <figcaption><b>Open a sector</b>Pick a grid size, then share a four-letter code or a link. No sign-ups.</figcaption>
       </figure>
       <figure>
-        <div class="shot-frame"><img src="img/deploy.jpg" width="1280" height="800" loading="lazy" alt="Deployment screen: ships placed on the grid, shaded squares showing where the Cruiser fits, and the drydock inventory on the left."></div>
-        <figcaption><b>Deploy your fleet</b>Place by hand or auto-deploy, then Signal Ready.</figcaption>
+        <div class="shot-frame"><img src="img/deploy.jpg" width="1280" height="800" loading="lazy" alt="Deployment screen: ships placed on the grid, shaded squares showing where the Cruiser fits, and beside it the ship cards, the sector code and the Comms feed."></div>
+        <figcaption><b>Deploy your fleet</b>Place by hand or auto-configure, then Ships Ready.</figcaption>
       </figure>
       <figure>
-        <div class="shot-frame"><img src="img/victory.jpg" width="1280" height="800" loading="lazy" alt="Victory screen reading Mission Complete, Victor: MAVERICK, with stars bursting out behind the card."></div>
+        <div class="shot-frame"><img src="img/victory.jpg" width="1280" height="800" loading="lazy" alt="Victory screen reading Mission Complete, Victor: MAVERICK, with stars bursting out behind the card and the Review Battlefield and Return to Main Menu buttons."></div>
         <figcaption><b>Claim victory</b>Last fleet afloat wins</figcaption>
       </figure>
     </div>
@@ -571,5 +576,6 @@
     });
   })();
 </script>
+<script src="js/sea.js" defer></script>
 </body>
 </html>
