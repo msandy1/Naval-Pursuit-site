@@ -17,7 +17,7 @@
   var PAN_CELL_MS = 13000;   // the pan moves one cell down and right this often
   var SLOW = 4;              // missiles and impacts play this much slower than in a game
   var SCENE_ALPHA = 0.45;    // ships and shots, dimmed behind the text
-  var SHIP = '43, 227, 107'; // your own ships' sonar green in a game
+  var SHIP = '96, 165, 250'; // your own ships' blue in a game
   var FLIGHT = 260;          // a streak missile's flight in a game (ms)
   var STREAK_DISTANCE = 3.2;
   var TRAIL_CELLS = 1.35;
@@ -144,7 +144,7 @@
     ctx.stroke();
   }
 
-  // A ship's cell as the board draws your own: the cell tinted sonar green, a
+  // A ship's cell as the board draws your own: the cell tinted in your colour, a
   // 1px outline on the cell borders, and the code dark on a slim chip in the
   // top-left corner; crimson, edged in rose, once hit.
   function drawShipCell(x, y, code, hit) {
