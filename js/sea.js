@@ -131,10 +131,12 @@
 
   // Drawing, as the game board draws ships, missiles and impacts.
 
+  // The board's grid: Slate950 cells and slate cell borders, the borders
+  // dimmed with the scene so they stay behind the text.
   function drawGrid(w, h, cam) {
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#020617';
     ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = 'rgba(148, 163, 184, 0.06)';
+    ctx.strokeStyle = 'rgba(93, 108, 131, ' + (0.85 * SCENE_ALPHA) + ')';
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (var x = -(cam % CELL); x < w; x += CELL) { ctx.moveTo(Math.round(x) + 0.5, 0); ctx.lineTo(Math.round(x) + 0.5, h); }
@@ -142,17 +144,25 @@
     ctx.stroke();
   }
 
+  // A ship's cell as the board draws your own: the cell tinted in your colour, a
+  // 1px outline on the cell borders, and the code dark on a slim chip in the
+  // top-left corner; crimson, edged in rose, once hit.
   function drawShipCell(x, y, code, hit) {
-    ctx.fillStyle = hit ? 'rgba(127, 29, 29, 0.8)' : '#1e293b';
+    var edge = hit ? '#FB7185' : 'rgb(' + SHIP + ')';
+    ctx.fillStyle = hit ? 'rgba(136, 19, 55, 0.9)' : 'rgba(' + SHIP + ', 0.22)';
     ctx.fillRect(x, y, CELL, CELL);
-    ctx.strokeStyle = 'rgba(' + SHIP + ', 0.8)';
+    var left = Math.round(x) + 0.5;
+    var top = Math.round(y) + 0.5;
+    ctx.strokeStyle = edge;
     ctx.lineWidth = 1;
-    ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
-    ctx.fillStyle = 'rgba(' + SHIP + ', 0.8)';
+    ctx.strokeRect(left, top, CELL, CELL);
     ctx.font = 'bold 9px ' + MONO;
-    ctx.textBaseline = 'top';
+    ctx.fillStyle = edge;
+    ctx.fillRect(left + 0.5, top + 0.5, ctx.measureText(code).width + 2, 9);
+    ctx.fillStyle = '#0B1220';
+    ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
-    ctx.fillText(code, x + 2, y + 2);
+    ctx.fillText(code, left + 1.5, top + 5.5);
   }
 
   function glowAt(x, y, rad, stops) {
