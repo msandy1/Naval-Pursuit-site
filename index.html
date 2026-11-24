@@ -211,7 +211,6 @@
   .beta ol { color: var(--muted); padding-left: 20px; margin: 18px 0 0; }
   .beta ol li { margin: 6px 0; }
   .beta-form label { display: block; font: 600 12px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
-  .beta-form label span { color: var(--dim); text-transform: none; letter-spacing: 0; font-weight: 400; }
   .beta-form input {
     width: 100%; margin: 0 0 18px; padding: 12px 14px; border-radius: 6px;
     border: 1px solid #475569; background: #020617; color: var(--text); font: 16px var(--sans);
@@ -219,6 +218,12 @@
   .beta-form input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
   .beta-form .hint { margin: -12px 0 18px; font-size: 13px; color: var(--dim); }
   .beta-form .btn { cursor: pointer; }
+  .beta-form .btn:disabled { opacity: 0.6; cursor: wait; }
+  .beta-form .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .beta-form .status { margin: 16px 0 0; font-size: 15px; }
+  .beta-form .status:empty { display: none; }
+  .beta-form .status.ok { color: var(--green); }
+  .beta-form .status.err { color: #f87171; }
   .beta-form .fallback { margin: 16px 0 0; font-size: 14px; color: var(--muted); }
 
   /* About */
@@ -463,7 +468,7 @@
       <p class="lede">The Naval Pursuit Android app is in early access testing on Google Play. Want to try it before everyone else? Sign up to be added to the testing group.</p>
       <ol>
         <li>Fill in the form.</li>
-        <li>Hit send. I'll add your Google account to the testers list.</li>
+        <li>Hit sign up. I'll add your Google account to the testers list.</li>
         <li>You'll get a link to install the app from Google Play.</li>
       </ol>
     </div>
@@ -471,12 +476,10 @@
       <label for="beta-email">Google account email</label>
       <input id="beta-email" name="email" type="email" autocomplete="email" required placeholder="you@gmail.com">
       <p class="hint">The address you use for Google Play on your Android phone.</p>
-      <label for="beta-name">Name or callsign <span>(optional)</span></label>
-      <input id="beta-name" name="callsign" type="text" autocomplete="nickname" maxlength="60">
-      <label for="beta-device">Phone model <span>(optional)</span></label>
-      <input id="beta-device" name="device" type="text" maxlength="60" placeholder="e.g. Pixel 8, Galaxy S24">
-      <button class="btn btn-primary" type="submit">Sign up by email</button>
-      <p class="fallback">Mail app didn't open? Email <a data-beta-mail href="mailto:navalpursuitdev@gmail.com">navalpursuitdev@gmail.com</a> with the subject "Android early access".</p>
+      <div class="trap" aria-hidden="true"><label for="beta-botcheck">Leave this empty</label><input id="beta-botcheck" name="botcheck" type="checkbox" tabindex="-1" autocomplete="off"></div>
+      <button class="btn btn-primary" type="submit">Sign up</button>
+      <p class="status" id="beta-status" role="status" aria-live="polite"></p>
+      <p class="fallback">Trouble signing up? Email <a data-beta-mail href="mailto:navalpursuitdev@gmail.com">navalpursuitdev@gmail.com</a> with the subject "Android early access".</p>
     </form>
   </div>
 </section>
@@ -554,25 +557,56 @@
     });
   })();
 
-  // Android early access sign-up: builds a pre-filled email from the form.
+  // Android early access sign-up: sent to navalpursuitdev@gmail.com through
+  // Web3Forms (web3forms.com). The access key is public by design: it only
+  // lets this form deliver to that inbox.
   (function () {
+    var ACCESS_KEY = '0c89034b-122d-4420-9e30-e2453c411061';
     var TO = 'navalpursuitdev@gmail.com';
     var SUBJECT = 'Android early access';
-    function mailto(email, name, device) {
-      var body = 'Hi, please add me to the Naval Pursuit Android testing group.\n\n' +
-        'Google account email: ' + (email || '') + '\n' +
-        'Name or callsign: ' + (name || '') + '\n' +
-        'Phone model: ' + (device || '') + '\n';
-      return 'mailto:' + TO + '?subject=' + encodeURIComponent(SUBJECT) +
-        '&body=' + encodeURIComponent(body);
-    }
     var form = document.getElementById('beta-form');
-    document.querySelectorAll('[data-beta-mail]').forEach(function (a) { a.href = mailto(); });
+    var status = document.getElementById('beta-status');
+    var button = form.querySelector('button[type="submit"]');
+
+    document.querySelectorAll('[data-beta-mail]').forEach(function (a) {
+      a.href = 'mailto:' + TO + '?subject=' + encodeURIComponent(SUBJECT);
+    });
+
+    function show(text, kind) {
+      status.textContent = text;
+      status.className = 'status' + (kind ? ' ' + kind : '');
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var email = form.email;
       if (!email.checkValidity()) { email.reportValidity(); email.focus(); return; }
-      window.location.href = mailto(email.value.trim(), form.callsign.value.trim(), form.device.value.trim());
+      if (form.botcheck.checked) return;
+
+      button.disabled = true;
+      show('Sending…');
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: ACCESS_KEY,
+          subject: SUBJECT,
+          from_name: 'Naval Pursuit site',
+          email: email.value.trim(),
+          message: 'Please add this Google account to the Naval Pursuit Android testing group: ' + email.value.trim()
+        })
+      }).then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok || !data.success) throw new Error(data.message || 'Request failed');
+        });
+      }).then(function () {
+        form.reset();
+        show("You're on the list. I'll add you to the testers group and you'll get a Google Play link soon.", 'ok');
+      }).catch(function () {
+        show("That didn't go through. Please try again, or email the address below.", 'err');
+      }).then(function () {
+        button.disabled = false;
+      });
     });
   })();
 </script>
