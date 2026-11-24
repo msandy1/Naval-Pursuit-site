@@ -37,6 +37,42 @@
 
   function easeOut(t) { return 1 - (1 - t) * (1 - t); }
 
+  // Text drawn with fillText is snapped to whole pixels, so as the pan glides
+  // the ship codes and round numbers would hop a pixel at a time while the
+  // grid moves smoothly. Each label is drawn once into a small sprite and
+  // placed with drawImage, which is filtered at sub-pixel positions.
+  var PAD = 4;
+  var sprites = {};
+  var spriteScale = 1;
+  function setSpriteScale(dpr) {
+    if (dpr !== spriteScale) { spriteScale = dpr; sprites = {}; }
+  }
+  function textSprite(text, font, color) {
+    var key = font + '|' + color + '|' + text;
+    if (sprites[key]) return sprites[key];
+    var c = document.createElement('canvas');
+    var g = c.getContext('2d');
+    g.font = font;
+    var textW = g.measureText(text).width;
+    var size = parseFloat(font.match(/(\d+(?:\.\d+)?)px/)[1]);
+    var w = Math.ceil(textW) + PAD * 2;
+    var h = Math.ceil(size * 1.4) + PAD * 2;
+    c.width = Math.ceil(w * spriteScale);
+    c.height = Math.ceil(h * spriteScale);
+    g.scale(spriteScale, spriteScale);
+    g.font = font;
+    g.fillStyle = color;
+    g.textAlign = 'left';
+    g.textBaseline = 'top';
+    g.fillText(text, PAD, PAD);
+    return (sprites[key] = { canvas: c, w: w, h: h, textW: textW, textH: size });
+  }
+  // Draws `text` with its top-left at (x, y), at sub-pixel precision.
+  function drawTextAt(text, font, color, x, y) {
+    var sp = textSprite(text, font, color);
+    ctx.drawImage(sp.canvas, x - PAD, y - PAD, sp.w, sp.h);
+  }
+
   // mulberry32: the same seed, the same numbers.
   function seededRandom(seed) {
     var a = seed >>> 0;
@@ -131,14 +167,16 @@
 
   // Drawing, as the game board draws ships, missiles and impacts.
 
+  // Lines sit at sub-pixel positions, not snapped to whole pixels: the pan
+  // only moves ~3px a second, and snapping made it step a pixel at a time.
   function drawGrid(w, h, cam) {
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, w, h);
     ctx.strokeStyle = 'rgba(148, 163, 184, 0.06)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    for (var x = -(cam % CELL); x < w; x += CELL) { ctx.moveTo(Math.round(x) + 0.5, 0); ctx.lineTo(Math.round(x) + 0.5, h); }
-    for (var y = -(cam % CELL); y < h; y += CELL) { ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(w, Math.round(y) + 0.5); }
+    for (var x = -(cam % CELL) + 0.5; x < w; x += CELL) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+    for (var y = -(cam % CELL) + 0.5; y < h; y += CELL) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
     ctx.stroke();
   }
 
@@ -148,11 +186,7 @@
     ctx.strokeStyle = 'rgba(' + SHIP + ', 0.8)';
     ctx.lineWidth = 1;
     ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
-    ctx.fillStyle = 'rgba(' + SHIP + ', 0.8)';
-    ctx.font = 'bold 9px ' + MONO;
-    ctx.textBaseline = 'top';
-    ctx.textAlign = 'left';
-    ctx.fillText(code, x + 2, y + 2);
+    drawTextAt(code, 'bold 9px ' + MONO, 'rgba(' + SHIP + ', 0.8)', x + 2, y + 2);
   }
 
   function glowAt(x, y, rad, stops) {
@@ -215,11 +249,12 @@
     });
     var a = Math.max(0, Math.min(1, (ms - 200) / 400));
     if (a > 0) {
-      ctx.fillStyle = 'rgba(255, 255, 255, ' + a + ')';
-      ctx.font = NUMBER_FONT;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(String(round), cx, cy + 1);
+      var sp = textSprite(String(round), NUMBER_FONT, '#ffffff');
+      var prev = ctx.globalAlpha;
+      ctx.globalAlpha = prev * a;
+      // Centred on the cell, as textAlign center / textBaseline middle did.
+      drawTextAt(String(round), NUMBER_FONT, '#ffffff', cx - sp.textW / 2, cy + 1 - sp.textH / 2);
+      ctx.globalAlpha = prev;
     }
   }
 
@@ -257,6 +292,7 @@
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    setSpriteScale(dpr);
   }
 
   // The hero's content, in the canvas's coordinates.
@@ -338,10 +374,11 @@
     drawFade(width, height);
   }
 
-  function tick() {
+  // The frame's own timestamp, so the pan advances evenly per frame.
+  function tick(ts) {
     frame = 0;
     if (!visible) return;
-    draw(performance.now() - start);
+    draw(ts - start);
     frame = requestAnimationFrame(tick);
   }
 
